@@ -12,7 +12,7 @@
 
 <p align="center">
   <strong>
-    Klaus was designed from the ground up, specifically around the focality of hard embedded idiosyncrasies within Claude Code. Utilizing its features, native capabilities, and <i>spunkiness</i>. This architecture explores refinement and reinforcing the Claude Code CLI harness.
+      Klaus was designed from the architectural design of the Claude Code harness, specifically around the focality of hard embedded idiosyncrasies within Claude Code. Utilizing its features, native capabilities, and <i>spunkiness</i>. This architecture explores refinement and reinforcing the Claude Code CLI harness.
   </strong>
 </p
 
