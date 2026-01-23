@@ -59,7 +59,7 @@ Without creating technical debt by adding in every skill, subagent, operational 
 
 ### Managing Memory
 
-*I understand that everyone has their own method/approach of managing memory. Letting an agent manage your codebase memory can cause technical debt, which is why they were specifically designed by thoroughly reading through the memory documentation seen above. I made these commands manually invocable to prevent edge case execution from wandered judgement.*
+*I understand that everyone has their own method/approach of managing memory. Letting an agent manage your codebase memory can cause technical debt, which is why I specifically designed it around the documentation seen above. I made these commands manually invocable to prevent edge cases from execution of wandered judgement.*
 
 ---
 
