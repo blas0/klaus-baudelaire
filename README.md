@@ -5,16 +5,16 @@
 </p>
 
 <p align="center">
-  <strong>
-    Klaus was designed from the ground up, specifically around the architecturally embedded idiosyncrasies of Claude Code. Utilizing its features, native capabilities, and <i>spunkiness</i>.
-  </strong>
-</p>
-
-<p align="center">
   <img src="klaus_claude.jpg" alt="klaus baudelaire" width="600">
 </p>
 
 ---
+
+<p align="center">
+  <strong>
+    Klaus was designed from the ground up, specifically around the focality of hard embedded idiosyncrasies within Claude Code. Utilizing its features, native capabilities, and <i>spunkiness</i>. This architecture explores refinement and reinforcing the Claude Code CLI harness.
+  </strong>
+</p
 
 <p align="center">
   <i>
