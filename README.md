@@ -145,8 +145,7 @@ This approach gives Claude enough context to understand where to look when it's 
 | simple \| quick | -3 | across \| multiple | 2 |
 | this file | -2 | best practice \| research | 3 |
 
-> [!TIP]
->  **Configurability:**
+>  **Easy to Configure right out-of-the-box:**
 >  
 >  • scoring weights
 >  
@@ -156,10 +155,9 @@ This approach gives Claude enough context to understand where to look when it's 
 >  
 >  • agentic routing
 >  
->  
 >  • delegation behaviors
 >  
->  _Allowing full and complete control to your liking._
+>  _Allowing full and complete control over how delegation executes._
 
 **The implementation workflow in laymen's terms:**
 
