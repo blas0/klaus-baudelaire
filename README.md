@@ -59,7 +59,7 @@ Without creating technical debt by adding in every skill, subagent, operational 
 
 ### Managing Memory
 
-*I understand that everyone has their own method/approach of managing memory. Letting an agent manage your codebase memory can cause technical debt, which is why I specifically designed it around the documentation seen above. I made these commands manually invocable to prevent edge cases from execution of wandered judgement.*
+*I understand that everyone has their own method/approach of managing memory. Letting an agent manage your codebase memory can cause technical debt, which is why I specifically designed it according to Claude's native design. The documentation is referenced above above. I made these commands manually invocable to prevent edge cases from execution of wandered judgement.*
 
 ---
 
@@ -109,7 +109,7 @@ This approach gives Claude enough context to understand where to look when it's 
 
 ### Polymathic Delegation
 
-*It would be weird if delegation wasn't polymathic, I mean... I named this project after an astute orphan.*
+*It would be weird if delegation wasn't polymathic, I mean... I did name this project after an astute orphan.*
 
 ---
 
@@ -157,7 +157,7 @@ This approach gives Claude enough context to understand where to look when it's 
 >  
 >  • delegation behaviors
 >  
->  _Allowing full and complete control over how delegation executes._
+> _Note: Configuring the system to be more submissive in terms of invoking delegations may cause thirstier token consumption.
 
 **The implementation workflow in laymen's terms:**
 
@@ -165,9 +165,9 @@ This approach gives Claude enough context to understand where to look when it's 
 2. `run tests` → `fix` (3 loops)
 3. `summarize` and `return results`
 
-> _0+ scores inherit this workflow._
+> _Prompt scoring isn't affected by the workflow._
 
-> _Scoring only affects the agents usages._
+> _Scoring only determines the initial agentic invocations._
 
 > **_For debugging your configurations:_**
 > 
@@ -179,7 +179,7 @@ This approach gives Claude enough context to understand where to look when it's 
 
 ## In Development:
 
-_Prioritizing this architecture by iterating upon during daily use. Refining where and when needed. The overall goal is to reinforce Claude's native **out-of-the-box** features, capabilities, and design mechanics - architecting a system that utilizes Claude to it's full potential._
+_Prioritizing this architecture by iterating upon during daily use. Refining where and when needed. The overall goal is to reinforce Claude's native **out-of-the-box** features, capabilities, and design mechanics - architecting a system that utilizes Claude to it's maximum potential._
 
 **As of 1/22/2026 the following agents are available:**
 
@@ -193,7 +193,7 @@ _Prioritizing this architecture by iterating upon during daily use. Refining whe
 
 ## Delegation Architecture
 
-### Feat. List
+### Future Feat. List
 
 `sub-delegative capabilities`
 
@@ -203,7 +203,7 @@ _Prioritizing this architecture by iterating upon during daily use. Refining whe
 
 `more specialized subagents`
 
-`enhance delegation workflow`
+`enhance delegation workflow in conjunction with new subagents`
 
 `...more`
 
@@ -224,4 +224,4 @@ _Prioritizing this architecture by iterating upon during daily use. Refining whe
   
   ---
   
-  _Not all features/refinements were added to this section._
+  _Not all feats will be implemented, structure can change at any given moment.`
