@@ -7,11 +7,14 @@
 
 <center>
 <strong>
-Klaus was designed from the ground up, specifically around the architecturally embedded idiosyncrasies of Claude Code. Utilizing it's features, native capabilities, and <i>spunkiness</i>.
+Klaus was designed from the ground up, specifically around the architecturally embedded idiosyncrasies of Claude Code. Utilizing its features, native capabilities, and <i>spunkiness</i>.
 </strong>
-</center>
 
-[klaus baudelair](klaus_baudelair.jpg)
+<br><br>
+
+<img src="/klaus_baudelaire.jpg" alt="klaus baudelaire" width="400">
+
+</center>
 
 ---
 
