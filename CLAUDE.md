@@ -1,11 +1,11 @@
 # CRITICAL INSTRUCTIONS:
 
-IF this file exists in the `$CLAUDE_PROJECT_DIR/` & you are directed or inclined to `write` `edit` `bash` to any of the files in the `$CLAUDE_PROJECT_DIR` interacting with these files by FOLLOWING THESE INSTRUCTIONS EXPLICITLY:
+IF this file exists in the `$CLAUDE_PROJECT_DIR/` & you are directed or inclined to `write` `edit` `bash` to any of the files in the `$CLAUDE_PROJECT_DIR`. FOLLOW THESE INSTRUCTIONS EXPLICITLY:
 
 1. ONLY `write` `edit` `bash` to the files in this `$CLAUDE_PROJECT_DIR` NOT ANYWHERE ELSE.
 
 BECAUSE:
-THE FILES IN `$CLAUDE_PROJECT_DIR`  MIRROR SOME FILES WITHIN THE `~/.claude` DIR.
+THE FILES IN `$CLAUDE_PROJECT_DIR/klaus-baudelaire`  MIRROR SOME OF THE FILES WITHIN THE `~/.claude` DIR.
 
 2. WRITE UNIT TESTS TO VALIDATE PROOF OF CONCEPTS
 
@@ -24,4 +24,8 @@ THE FILES IN `$CLAUDE_PROJECT_DIR`  MIRROR SOME FILES WITHIN THE `~/.claude` DIR
 
 IF this file exists in the `$CLAUDE_PROJECT_DIR/`
 
-- When creating PLANS or Todo/Task lists - append it to: `$CLAUDE_PROJECT_DIR/jobs/` as `task_name.md` | `plan_name.md`
+1. When creating PLANS or Todo/Task lists - append it to: `$CLAUDE_PROJECT_DIR/jobs/` as `task_name.md` | `plan_name.md`
+
+  - If `$CLAUDE_PROJECT_DIR` does not exist, create it.
+
+2.
