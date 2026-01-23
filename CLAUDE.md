@@ -1,0 +1,22 @@
+# CRITICAL RULES:
+
+IF this file exists in the `$CLAUDE_PROJECT_DIR/` & you are directed or inclined to `write` `edit` `bash` to any of the files in the `$CLAUDE_PROJECT_DIR` THEN FOLLOW RULES EXPLICITLY:
+
+1. ONLY `write` `edit` `bash` to the files in this `$CLAUDE_PROJECT_DIR` NOT ANYWHERE ELSE.
+
+BECAUSE:
+THE FILES IN `$CLAUDE_PROJECT_DIR`  MIRROR SOME FILES WITHIN THE `~/.claude` DIR.
+
+2. WRITE UNIT TESTS TO VALIDATE PROOF OF CONCEPTS
+
+3. AFTER `bash`, `write` & or `edit` TO FILES:
+
+- WRITE INTEGRATION TESTS FOR MIGRATING FILE CHANGES APPROPRIATELY
+  • `$CLAUDE_PROJECT_DIR` -> `~/.claude` 
+
+IF UNIT + INTEGRATIONS PASS/FAIL -> `AskUserQuestion` FOR NEXT STEPS
+
+  • MIGRATE FROM `$CLAUDE_PROJECT_DIR` TO `~/.claude`?
+  • SUGGEST OTHER ACTIONS FOR RESOLVING FAILED TESTS:
+
+----
