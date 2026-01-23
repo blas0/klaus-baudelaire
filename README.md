@@ -157,7 +157,7 @@ This approach gives Claude enough context to understand where to look when it's 
 >  
 >  • delegation behaviors
 >  
-> _Note: Configuring the system to be more submissive in terms of invoking delegations may cause thirstier token consumption.
+> _Note: Configuring the system to be more submissive in terms of invoking delegations may cause thirstier token consumption._
 
 **The implementation workflow in laymen's terms:**
 
