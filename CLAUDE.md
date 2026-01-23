@@ -5,7 +5,7 @@ IF this file exists in the `$CLAUDE_PROJECT_DIR/` & you are directed or inclined
 1. ONLY `write` `edit` `bash` to the files in this `$CLAUDE_PROJECT_DIR` NOT ANYWHERE ELSE.
 
 BECAUSE:
-THE FILES IN `$CLAUDE_PROJECT_DIR/klaus-baudelaire`  MIRROR SOME OF THE FILES WITHIN THE `~/.claude` DIR.
+THE FILES IN `$CLAUDE_PROJECT_DIR/klaus-package`  MIRROR SOME OF THE FILES WITHIN THE `~/.claude` DIR.
 
 2. WRITE UNIT TESTS TO VALIDATE PROOF OF CONCEPTS
 
@@ -13,11 +13,11 @@ THE FILES IN `$CLAUDE_PROJECT_DIR/klaus-baudelaire`  MIRROR SOME OF THE FILES WI
 
 - WRITE INTEGRATION TESTS FOR MIGRATING FILE CHANGES APPROPRIATELY:
 
-`$CLAUDE_PROJECT_DIR` -> `~/.claude` 
+`$CLAUDE_PROJECT_DIR/klaus-package` -> `~/.claude` 
 
 4. IF UNIT + INTEGRATIONS PASS/FAIL -> `AskUserQuestion` FOR NEXT STEPS
 
-- WHEN TESTS PASS MIGRATE FROM `$CLAUDE_PROJECT_DIR` TO `~/.claude`?
+- WHEN TESTS PASS, MIGRATE FROM `$CLAUDE_PROJECT_DIR/klaus-package` TO `~/.claude`?
 - SUGGEST OTHER ACTIONS FOR RESOLVING FAILED TESTS:
 
 # CRITICAL INSTRUCTIONS (CONT.):
@@ -27,5 +27,3 @@ IF this file exists in the `$CLAUDE_PROJECT_DIR/`
 1. When creating PLANS or Todo/Task lists - append it to: `$CLAUDE_PROJECT_DIR/jobs/` as `task_name.md` | `plan_name.md`
 
   - If `$CLAUDE_PROJECT_DIR` does not exist, create it.
-
-2.
