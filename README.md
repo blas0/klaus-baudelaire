@@ -55,7 +55,8 @@ Without creating technical debt by adding in every skill, subagent, operational 
 
 ---
 
-<u><h2> Section I</h2></u>
+## Section I
+
 ### Managing Memory
 
 *I understand that everyone has their own method/approach of managing memory. Letting an agent manage your codebase memory can cause technical debt, which is why they were specifically designed by thoroughly reading through the memory documentation seen above. I made these commands manually invocable to prevent edge case execution from wandered judgement.*
@@ -71,9 +72,9 @@ Without creating technical debt by adding in every skill, subagent, operational 
 
 Each document within the scaffolding contains `$VARIABLES` & `$INSTRUCTIONS` for the agent to follow during the `/fillmemory | /compost` execution - updating the documentation files - post scaffolding.
 
-<u>**The scaffolding covers:**</u>
+**The scaffolding covers:**
 
-```
+```bash
   .claude/
   ├── rules/
   │   └── project-index.md
@@ -104,7 +105,8 @@ This approach gives Claude enough context to understand where to look when it's 
 > *This will update your entire `$PROJECT` dir, with conditional elifs to prevent indirect documentation population.*
 ---
 
-<u><h2> Section II</h2></u>
+## Section II
+
 ### Polymathic Delegation
 
 *It would be weird if delegation wasn't polymathic, I mean... I named this project after an astute orphan.*
@@ -115,7 +117,7 @@ This approach gives Claude enough context to understand where to look when it's 
 
 `UserPromptSubmit` will invoke the delegation. Delegation is determined through scoring.
 
-<u>**Prompt Scoring Criteria:**</u>
+**Prompt Scoring Criteria:**
 
 | Score Range | Tier | Workflow | Agents |
 |:-----------:|:----:|:--------:|:---:|
@@ -159,7 +161,7 @@ This approach gives Claude enough context to understand where to look when it's 
 >  
 >  _Allowing full and complete control to your liking._
 
-**<u>The implementation workflow in laymen's terms:</u>**
+**The implementation workflow in laymen's terms:**
 
 1. `edit | write` → `follow plan`
 2. `run tests` → `fix` (3 loops)
@@ -181,7 +183,7 @@ This approach gives Claude enough context to understand where to look when it's 
 
 _Prioritizing this architecture by iterating upon during daily use. Refining where and when needed. The overall goal is to reinforce Claude's native **out-of-the-box** features, capabilities, and design mechanics - architecting a system that utilizes Claude to it's full potential._
 
-**<u>As of **1/22/2026** the following agents are available:</u>**
+**As of 1/22/2026 the following agents are available:**
 
 `explore-light`
 `research-light`
@@ -192,7 +194,8 @@ _Prioritizing this architecture by iterating upon during daily use. Refining whe
 ---
 
 ## Delegation Architecture
-<U><h3>Feat. List</h3></u>
+
+### Feat. List
 
 `sub-delegative capabilities`
 
