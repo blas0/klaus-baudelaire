@@ -33,6 +33,13 @@
 > 
 > _**Expect:**_ _**`npx | plugin | git/script`**_ _**after I get version control in sorts.**_
 
+---
+
+**Mission Statement:**
+_The core focus for Klaus is to reinforce and refine Claude Code's native **out-of-the-box** features, capabilities, and architectural design mechanics. Brainstorming, researching, planning and designing this system based on abstractions, documentation, blogs, & notable novelties made/created/posted by Anthropic. Treating Klaus as a child of Claude - a system that is aligned through and by Anthropics's own mission of AI safety._
+
+---
+
 ### Prologue
 
 The amount of harnesses that appear daily is mind boggling & of course we're all going to try it out, but like most of us - we go back home: **Claude Code, OpenCode, Cursor or even Droid.**
@@ -177,51 +184,35 @@ This approach gives Claude enough context to understand where to look when it's 
 
 ---
 
-## In Development:
+## Future Development:
 
-_Prioritizing this architecture by iterating upon during daily use. Refining where and when needed. The overall goal is to reinforce Claude's native **out-of-the-box** features, capabilities, and design mechanics - architecting a system that utilizes Claude to it's maximum potential._
-
-**As of 1/22/2026 the following agents are available:**
-
-`explore-light`
-`research-light`
-`research-lead`
-`research-subagent`
-`composter`
+**Mission Statement:**
+_The core focus for Klaus is to reinforce and refine Claude Code's native **out-of-the-box** features, capabilities, and architectural design mechanics. Brainstorming, researching, planning and designing this system based on abstractions, documentation, blogs, & notable novelties made/created/posted by Anthropic. Treating Klaus as a child of Claude - a system that is aligned through and by Anthropics's own mission of AI safety._
 
 ---
 
-## Delegation Architecture
+  1. `project-scaffold-agent`
+  - Purpose: Initialize/scaffold project deployments (backend/frontend/deployment/infra/etc.)
+  - Model: Sonnet
+  - Tools: Write, Edit, Bash, Read
 
-### Future Feat. List
+  2. Sub-delegation Extensions
+  - Purpose: Extend research-lead pattern to other agents
+  - Would allow agents to spawn their own sub-agents
+  - Configuration: MAX_DELEGATION_DEPTH=3, MAX_SUBAGENTS_PER_LEAD=20
 
-`sub-delegative capabilities`
+  3. Full Escalation Protocol
+  - Purpose: Automated escalation hooks for reminder-nudger-agent
+  - Would integrate reminder system with SubagentStop hooks
+  - Would automatically inject reminders at stagnation thresholds
 
-`task-specific subagents`
+  4. Hook Integration for file-path-extractor
+  - Purpose: PostToolUse hook to automatically invoke file-path-extractor
+  after bash commands
+  - Would automatically track file context without manual invocation
 
-`tool-specific subagents`
+---
 
-`more specialized subagents`
+Thank you for getting to the end of this document. I have rewritten this about 4 times by hand because I have no idea how to capture people's attention & I felt as if my direction with this document needed to have some sort of sentiment with the reader. I really do appreciate it.
 
-`enhance delegation workflow in conjunction with new subagents`
-
-`...more`
-
-
-#### FIRST PRIORITY:
-* Tool based subagent `web-research-specialist` → high utility, low complexity
-* Hook based subagent `bash-file-path-extractor` → context enricher, lower token usage
-  
-#### SECOND PRIORITY:
-* Post implementation subagent `test-infra-agent`→ enhanced validation step
-* Workflow/hook based subagent `reminder-nudger-agent`→  stagnation steering, reality-checker
-* Metrics for `TodoWrite`
-
-#### LAST PRIORITY:
-* Extending delegation to subagentic delegation
-* Contextually aware/plan based subagent `project-scaffold-deployment-agent` → setup frontend, backend, infra for new projects
-* Full escalation protocol → loop prevention, edge cases, complex runs
-  
-  ---
-  
-  _Not all feats will be implemented, structure can change at any given moment.`
+PR's are welcome.
