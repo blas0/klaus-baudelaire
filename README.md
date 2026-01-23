@@ -1,28 +1,26 @@
-<center>
-<h1>
-<u>Who is Klaus Baudelaire?</u>
-</h1>
-</center>
+<p align="center">
+  <h1 align="center">
+    <u>Who is Klaus Baudelaire?</u>
+  </h1>
+</p>
 
+<p align="center">
+  <strong>
+    Klaus was designed from the ground up, specifically around the architecturally embedded idiosyncrasies of Claude Code. Utilizing its features, native capabilities, and <i>spunkiness</i>.
+  </strong>
+</p>
 
-<center>
-<strong>
-Klaus was designed from the ground up, specifically around the architecturally embedded idiosyncrasies of Claude Code. Utilizing its features, native capabilities, and <i>spunkiness</i>.
-</strong>
-
-<br><br>
-
-<img src="/klaus_baudelaire.jpg" alt="klaus baudelaire" width="400">
-
-</center>
+<p align="center">
+  <img src="klaus_claude.jpg" alt="klaus baudelaire" width="600">
+</p>
 
 ---
 
-<center>
-<i>
-If you have ever read the Lemony Snicket books or watched the films. You know who he is. Instead of protecting his sisters from Jim Carrey or Barney Stinson...he serves you, by delegating agents to ship your 6th SaaS tool of the week.
-</i>
-</center>
+<p align="center">
+  <i>
+    If you have ever read the Lemony Snicket books or watched the films. You know who he is. Instead of protecting his sisters from Jim Carrey or Barney Stinson...he serves you, by delegating agents to ship your 6th SaaS tool of the week.
+  </i>
+</p>
 
 ---
 
