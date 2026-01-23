@@ -11,7 +11,7 @@ Klaus was designed from the ground up, specifically around the architecturally e
 </strong>
 </center>
 
-![[klaus_claude.jpg]]
+[klaus baudelair](klaus_baudelair.jpg)
 
 ---
 
