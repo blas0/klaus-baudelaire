@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Hooks**
   - `klaus-delegation.sh` - Smart task routing with tiered workflow system
   - `tiered-workflow.txt` - Workflow templates for LIGHT/MEDIUM/FULL tiers
-  - `hooks.json` - Future-ready hook configuration (when bug #10225 is fixed)
+  - `hooks.json` - Hook configuration for plugin system (manual setup still required)
 
 - **Configuration**
   - `klaus-delegation.conf` - Configurable scoring thresholds and keywords
@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Support for ${CLAUDE_PLUGIN_ROOT} variable
 
 ### Known Issues
-- **UserPromptSubmit Hook Workaround**: Due to Claude Code bug [#10225](https://github.com/anthropics/claude-code/issues/10225), the UserPromptSubmit hook must be manually configured in `settings.json` using the included `install.sh` script. This will be automatic once the bug is resolved.
+- **UserPromptSubmit Hook**: Plugin hooks require manual configuration due to bugs [#10225](https://github.com/anthropics/claude-code/issues/10225) (hook execution) and [#12151](https://github.com/anthropics/claude-code/issues/12151) (output not captured - STILL OPEN as of January 2026). The `install.sh` script configures hooks in `settings.json` as a workaround. Even when hooks execute successfully, their output may not be properly injected into agent context.
 
 ### Installation
 See README.md for complete installation instructions. Quick start:

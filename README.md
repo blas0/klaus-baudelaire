@@ -6,6 +6,12 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/blas0/klaus-baudelaire">
+    <img src="https://img.shields.io/github/stars/blas0/klaus-baudelaire?style=social" alt="GitHub stars">
+  </a>
+</p>
+
+<p align="center">
   <img src="klaus_claude.jpg" alt="klaus baudelaire" width="600">
 </p>
 
