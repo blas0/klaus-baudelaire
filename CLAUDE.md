@@ -27,3 +27,11 @@ IF this file exists in the `$CLAUDE_PROJECT_DIR/`
 1. When creating PLANS or Todo/Task lists - append it to: `$CLAUDE_PROJECT_DIR/jobs/` as `task_name.md` | `plan_name.md`
 
   - If `$CLAUDE_PROJECT_DIR` does not exist, create it.
+
+2. When ANY changes have been made to the files in `$CLAUDE_PROJECT_DIR/klaus-package`, ensure the changes that were made are reflected in the `CHANGELOG.md` file.
+
+  - Use `AskUserQuestion` to determine if `README.md` needs to be updated.
+
+---
+
+**END OF CLAUDE.md**
