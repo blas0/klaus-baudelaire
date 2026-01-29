@@ -5,6 +5,7 @@ All notable changes to the Klaus Baudelaire plugin will be documented in this fi
 **Format changes by following this template:**
 
 **Flags: `fixed`, `added`, `optimized`, `removed`, `feature`**
+
 **Versioning: Linear versioning (ex. 1.0.0 -> 1.0.1 -> 1.0.2 -> ...)**
 
 ```
@@ -20,7 +21,9 @@ All notable changes to the Klaus Baudelaire plugin will be documented in this fi
 ```
 
 <example>
+
 ---
+
 **1.0.0** | **Jan. 28th, 2026**
 
 - fixed bug in login functionality
