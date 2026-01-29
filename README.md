@@ -269,7 +269,7 @@ Klaus registers 1 hook (`UserPromptSubmit`) which invokes `klaus-delegation.sh`.
 
 ## Documentation
 
-All detailed documentation lives in [`docs/`](docs/README.md):
+All detailed documentation:
 
 01. [Installation](docs/01-installation.md) | 02. [Architecture](docs/02-delegation-architecture.md) | 03. [Scoring](docs/03-scoring-algorithm.md)
 04. [Keywords](docs/04-configuration-keywords.md) | 05. [Profiles](docs/05-profile-system.md) | 06. [Feature Flags](docs/06-feature-flags.md)
