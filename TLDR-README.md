@@ -2,6 +2,16 @@
   <img src="assets/klaus.png" alt="Klaus Baudelaire" width="750" />
 </p>
 
+> [!NOTE]
+> Not available publicly yet. Doing comprehensive sweeps of documentation and delegation architecture.
+
+<p align="center">
+  <img src="https://img.shields.io/github/stars/blas0/klaus-baudelaire?style=flat&color=orange" alt="GitHub Stars" />
+  <img src="https://img.shields.io/badge/Claude_Code-2.1.25-red" alt="Claude Code" />
+  <img src="https://img.shields.io/badge/Claude_Tasks-Create_•_Get_•_Update_•_List-gray" alt="Claude Tasks" />
+  <a href="https://x.com/nrx_co"><img src="https://img.shields.io/badge/X-@nrx__co-gray" alt="X" /></a>
+</p>
+
 # Klaus Baudelaire
 
 **The Polymathic Delegation System for Claude Code**
