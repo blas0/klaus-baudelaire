@@ -1,4 +1,4 @@
-# EXPLICIT CHANGELOG INSTRUCTIONS
+### EXPLICIT CHANGELOG INSTRUCTIONS
 
 All notable changes to the Klaus Baudelaire plugin will be documented in this file.
 
@@ -20,8 +20,7 @@ All notable changes to the Klaus Baudelaire plugin will be documented in this fi
 
 ```
 
-<example>
-
+```
 ---
 
 **1.0.0** | **Jan. 28th, 2026**
@@ -32,8 +31,7 @@ All notable changes to the Klaus Baudelaire plugin will be documented in this fi
 - removed redundant feature within user dashboard
 
 ---
-
-<example>
+```
 
 ---
 
