@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/klaus.png" alt="Klaus Baudelaire" width="200" />
+  <img src="assets/klaus.png" alt="Klaus Baudelaire" width="750" />
 </p>
 
 # Klaus Baudelaire
