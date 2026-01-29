@@ -1,36 +1,23 @@
-# CRITICAL INSTRUCTIONS:
+**EXPLICIT REFINFORCEMENT**
 
-IF this file exists in the `$CLAUDE_PROJECT_DIR/` & you are directed or inclined to `write` `edit` `bash` to any of the files in the `$CLAUDE_PROJECT_DIR`. FOLLOW THESE INSTRUCTIONS EXPLICITLY:
+1. See @~/.claude/CLAUDE.md for a refresher.
 
-1. ONLY `write` `edit` `bash` to the files in this `$CLAUDE_PROJECT_DIR` NOT ANYWHERE ELSE.
+2. The @tests/ | @tools/ dirs are EXPLICITLY for the developer of this plugin.
 
-BECAUSE:
-THE FILES IN `$CLAUDE_PROJECT_DIR/klaus-package`  MIRROR SOME OF THE FILES WITHIN THE `~/.claude` DIR.
+  - Ensure ANY FILE OR FOLDER within `klaus-baudelaire/` contain NOTHING in relation to the `tools/` & `tests/` dirs.
+    - The ONLY "test" related files are in: `klaus-baudelaire/commands/klaus-test.md` | `klaus-baudelaire/.system`  
 
-2. WRITE UNIT TESTS TO VALIDATE PROOF OF CONCEPTS
-
-3. AFTER `bash`, `write` & or `edit` TO FILES:
-
-- WRITE INTEGRATION TESTS FOR MIGRATING FILE CHANGES APPROPRIATELY:
-
-`$CLAUDE_PROJECT_DIR/klaus-package` -> `~/.claude` 
-
-4. IF UNIT + INTEGRATIONS PASS/FAIL -> `AskUserQuestion` FOR NEXT STEPS
-
-- WHEN TESTS PASS, MIGRATE FROM `$CLAUDE_PROJECT_DIR/klaus-package` TO `~/.claude`?
-- SUGGEST OTHER ACTIONS FOR RESOLVING FAILED TESTS:
-
-# CRITICAL INSTRUCTIONS (CONT.):
+# EXPLICIT INSTRUCTIONS:
 
 IF this file exists in the `$CLAUDE_PROJECT_DIR/`
 
-1. When creating PLANS or Todo/Task lists - append it to: `$CLAUDE_PROJECT_DIR/jobs/` as `task_name.md` | `plan_name.md`
+1. When creating PLANS or Todo/Task lists - append it to: `$CLAUDE_PROJECT_DIR/plans/` as `task_name.md` | `plan_name.md`
 
-  - If `$CLAUDE_PROJECT_DIR` does not exist, create it.
+  - If `$CLAUDE_PROJECT_DIR/plans` does not exist, create it.
 
-2. When ANY changes have been made to the files in `$CLAUDE_PROJECT_DIR/klaus-package`, ensure the changes that were made are reflected in the `CHANGELOG.md` file.
+2. WHEN modifying any files within the `$CLAUDE_PROJECT_DIR/klaus-baudelaire` directory, ensure all revisions are accurately documented in the `CHANGELOG.md` file. These updates should be aggregated under the current sequential version identifier, remaining in a pending state until the changes are officially committed and pushed to the repository. Simultaneously, verify that all supplementary documentation in `klaus-baudelaire/docs/` and the `TLDR-README.md` is updated in tandem to maintain complete synchronicity across the project's technical records. This workflow ensures that every iteration is captured as a distinct unit of progress while maintaining a clean, linear history that aligns the codebase with its corresponding documentation.
 
-  - Use `AskUserQuestion` to determine if `README.md` needs to be updated.
+**CRITICAL:** AFTER ANY changes have been made to the files in `$CLAUDE_PROJECT_DIR/klaus-baudelaire`, BEFORE APPENDING ANY CONTENT TO THE CHANGELOG OR TLDR-README.md OR CORRELATING .MD FILES WITHIN /DOCS -> utilize the tests and tools within the `$CLAUDE_PROJECT_DIR/tools` & `$CLAUDE_PROJECT_DIR/tests` directories to ensure the changes made are functional and do not introduce any regressions or conflicts.
 
 ---
 
