@@ -16,6 +16,7 @@ All notable changes to the Klaus Baudelaire plugin will be documented in this fi
 - <flag> <description of modification in 20 words or less>
 
 ---
+
 ```
 
 <example>
@@ -28,6 +29,7 @@ All notable changes to the Klaus Baudelaire plugin will be documented in this fi
 - removed redundant feature within user dashboard
 
 ---
+
 <example>
 
 ---
