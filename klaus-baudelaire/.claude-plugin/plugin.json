@@ -1,0 +1,30 @@
+{
+  "name": "klaus-baudelaire",
+  "version": "1.0.1",
+  "description": "The Polymathic Delegation System - Intelligent task routing with tiered workflow management, smart agent orchestration, and project memory scaffolding for Claude Code",
+  "author": {
+    "name": "Klaus Baudelaire Contributors"
+  },
+  "repository": "https://github.com/blas0/klaus-baudelaire",
+  "license": "MIT",
+  "keywords": [
+    "delegation",
+    "workflow",
+    "agents",
+    "productivity",
+    "task-routing",
+    "memory-management",
+    "orchestration",
+    "claude-code-plugin"
+  ],
+  "hooks": "./hooks/hooks.json",
+  "commands": {
+    "/klaus": "commands/klaus.md",
+    "/klaus feature": "commands/feature.md",
+    "/fillmemory": "commands/fillmemory.md",
+    "/compost": "commands/compost.md",
+    "/updatememory": "commands/updatememory.md",
+    "/suggestkeywords": "commands/suggestkeywords.md",
+    "/klaus-test": "commands/klaus-test.md"
+  }
+}
