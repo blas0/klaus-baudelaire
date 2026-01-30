@@ -173,7 +173,15 @@ PROMPT_LENGTH=${#USER_PROMPT}
 # Skip checks (allow /klaus commands through for tier routing)
 [[ "$SMART_DELEGATE_MODE" == "OFF" ]] && { echo '{}'; exit 0; }
 [[ "$USER_PROMPT" == /* && ! "$USER_PROMPT" =~ ^/klaus[[:space:]] ]] && { echo '{}'; exit 0; }
-[[ "$PROMPT_LENGTH" -lt "$MIN_LENGTH" ]] && { echo '{}'; exit 0; }
+
+# [!!!] MANDATORY: Detect /klaus command for forced FULL tier + mandatory plan-orchestrator
+KLAUS_COMMAND=false
+if [[ "$USER_PROMPT" =~ ^/klaus[[:space:]] ]]; then
+    KLAUS_COMMAND=true
+fi
+
+# Skip minimum length check for /klaus commands (they're explicit requests)
+[[ "$KLAUS_COMMAND" == "false" && "$PROMPT_LENGTH" -lt "$MIN_LENGTH" ]] && { echo '{}'; exit 0; }
 
 # [!] ASYNC MODE: Immediate provisional response + background analysis
 if [[ "$ENABLE_ASYNC_HOOKS" == "ON" ]]; then
@@ -426,6 +434,12 @@ elif [[ $SCORE -lt $TIER_MEDIUM_MIN ]]; then TIER="LIGHT"
 elif [[ $SCORE -lt $TIER_FULL_MIN ]]; then TIER="MEDIUM"
 else TIER="FULL"; fi
 
+# [!!!] MANDATORY: /klaus command forces FULL tier (bypass score-based routing)
+if [[ "$KLAUS_COMMAND" == "true" ]]; then
+    TIER="FULL"
+    SCORE=10  # Set to FULL tier score for logging/metadata purposes
+fi
+
 # [!] Log routing decision (telemetry - all tiers including DIRECT)
 log_routing_decision "$USER_PROMPT" "$SCORE" "$TIER" "$CONTEXT7_RELEVANT" "$CONTEXT7_SCORE" "${MATCHED_COMPLEX[*]:-}"
 
@@ -481,15 +495,24 @@ if [[ "$TIER" == "MEDIUM" || "$TIER" == "FULL" ]]; then
         ADDITIONAL_CONTEXT+="\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
     fi
 
-    # [!!!] CRITICAL: Use tagging invocation syntax (not verbose Task() instructions)
-    ADDITIONAL_CONTEXT+="${TIER} TIER: Plan Agent Orchestration\n"
-    ADDITIONAL_CONTEXT+="═══════════════════════════════════════\n\n"
-    ADDITIONAL_CONTEXT+="@\"plan-orchestrator (agent)\" - Decompose and delegate this task\n\n"
+    # [!!!] CRITICAL: Use MANDATORY directive for /klaus commands, advisory for score-based routing
+    if [[ "$KLAUS_COMMAND" == "true" ]]; then
+        ADDITIONAL_CONTEXT+="[MANDATORY] /klaus COMMAND DETECTED\n"
+        ADDITIONAL_CONTEXT+="═══════════════════════════════════════\n\n"
+        ADDITIONAL_CONTEXT+="You MUST invoke plan-orchestrator via the Task tool.\n"
+        ADDITIONAL_CONTEXT+="Do NOT use other agents (Explore, web-research-specialist, etc.) directly.\n"
+        ADDITIONAL_CONTEXT+="Call: Task tool with subagent_type=\"plan-orchestrator\"\n\n"
+        ADDITIONAL_CONTEXT+="@\"plan-orchestrator (agent)\" - REQUIRED orchestrator for this request\n\n"
+    else
+        ADDITIONAL_CONTEXT+="${TIER} TIER: Plan Agent Orchestration\n"
+        ADDITIONAL_CONTEXT+="═══════════════════════════════════════\n\n"
+        ADDITIONAL_CONTEXT+="@\"plan-orchestrator (agent)\" - Decompose and delegate this task\n\n"
+    fi
     ADDITIONAL_CONTEXT+="User Request: ${USER_PROMPT}\n\n"
     ADDITIONAL_CONTEXT+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
 
     # [!!!] Output valid UserPromptSubmit hook JSON
-    jq -n --arg ctx "$ADDITIONAL_CONTEXT" --arg tier "$TIER" --arg score "$SCORE" --arg c7 "$CONTEXT7_RELEVANT" --arg c7s "$CONTEXT7_SCORE" \
+    jq -n --arg ctx "$ADDITIONAL_CONTEXT" --arg tier "$TIER" --arg score "$SCORE" --arg c7 "$CONTEXT7_RELEVANT" --arg c7s "$CONTEXT7_SCORE" --arg klaus "$KLAUS_COMMAND" \
       '{
         "hookSpecificOutput": {
           "hookEventName": "UserPromptSubmit",
@@ -498,7 +521,8 @@ if [[ "$TIER" == "MEDIUM" || "$TIER" == "FULL" ]]; then
             "tier": $tier,
             "complexity_score": ($score|tonumber),
             "plan_agent_active": true,
-            "invocation_method": "tagging",
+            "invocation_method": (if $klaus == "true" then "mandatory" else "tagging" end),
+            "klaus_command": ($klaus == "true"),
             "context7_relevant": ($c7=="true"),
             "context7_score": ($c7s|tonumber)
           }

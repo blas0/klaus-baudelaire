@@ -51,6 +51,15 @@ All notable changes to the Klaus Baudelaire plugin will be documented in this fi
 
 ---
 
+**1.0.3** | **Jan. 30th, 2026**
+
+- added MANDATORY plan-orchestrator invocation for `/klaus` commands (no longer advisory)
+- added KLAUS_COMMAND detection flag with forced FULL tier routing override
+- added mandatory directive language in additionalContext for `/klaus` requests
+- added `klaus_command` and `invocation_method: "mandatory"` metadata fields
+
+---
+
 **1.0.2** | **Jan. 30th, 2026**
 
 - fixed slash command early-exit bug in klaus-delegation.sh line 175
