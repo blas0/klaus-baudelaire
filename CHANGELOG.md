@@ -39,6 +39,18 @@ All notable changes to the Klaus Baudelaire plugin will be documented in this fi
 
 ---
 
+**1.0.1** | **Jan. 30th, 2026**
+
+- fixed install.sh now supports clone-anywhere installation with automatic source detection
+- added timestamped backup system to ~/.claude-backups/ before installation
+- added settings.json hook merging (appends to existing hooks instead of replacing)
+- added --mode, --target, --dry-run, --verbose, --no-backup flags to install.sh
+- optimized installation preserves user's CLAUDE.md and existing config files
+- fixed README.md installation instructions to show clone-anywhere approach
+- fixed docs/01-installation.md with comprehensive guide and uninstallation steps
+
+---
+
 **1.0.0** | **Jan. 29th, 2026**
 
 - feature plugin release

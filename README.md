@@ -33,19 +33,22 @@ Klaus is an **intelligent task routing infrastructure** that automatically analy
 ## Quick Install
 
 ```bash
-# Plugin Installation (Recommended)
-/plugin marketplace add https://github.com/blas0/klaus-baudelaire
-/plugin install klaus-baudelaire@klaus-marketplace
-~/.local/share/claude/plugins/klaus-baudelaire/install.sh
+# Clone anywhere (your choice of location)
+git clone https://github.com/blas0/klaus-baudelaire ~/klaus-baudelaire
+# or: git clone https://github.com/blas0/klaus-baudelaire /path/to/anywhere
 
-# Standalone Installation
-git clone https://github.com/blas0/klaus-baudelaire ~/.claude
-~/.claude/.system/install.sh
+# Run installer (backs up existing ~/.claude automatically)
+~/klaus-baudelaire/.system/install.sh
 
-# Verify
-bash ~/.claude/tests/unit-tests.sh
-bun ~/.claude/tests/integration-tests.ts
+# Restart Claude Code, then verify
+/klaus-test
 ```
+
+**What the installer does:**
+- Backs up your existing `~/.claude` to `~/.claude-backups/`
+- Copies Klaus components (hooks, agents, commands, config)
+- **Merges** settings.json hooks (preserves your existing hooks)
+- **Preserves** your CLAUDE.md and config customizations
 
 [Full Installation Guide -->](docs/01-installation.md)
 
@@ -211,27 +214,21 @@ DEBUG_MODE="OFF"                  # Debug logging
 
 ## Testing
 
-### From Development Repository
+### From Your Cloned Repository
 ```bash
-# Navigate to repository root first
+# Navigate to your clone location first
+cd ~/klaus-baudelaire  # or wherever you cloned
+
 bash tests/unit-tests.sh              # 79 unit tests
 bash tests/hooks-suite.sh             # 88 hook tests
 bash tests/e2e-suite.sh               # 26 E2E tests
 bun tests/integration-tests.ts        # 12 routing tests
 ```
 
-### After Plugin Installation
+### Quick Verification After Installation
 ```bash
-KLAUS_ROOT=~/.local/share/claude/plugins/klaus-baudelaire
-bash $KLAUS_ROOT/tests/unit-tests.sh
-bash $KLAUS_ROOT/tests/hooks-suite.sh
-```
-
-### After Standalone Installation
-```bash
-bash ~/.claude/tests/unit-tests.sh
-bash ~/.claude/tests/hooks-suite.sh
-bun ~/.claude/tests/integration-tests.ts
+# In Claude Code
+/klaus-test
 ```
 
 **Total**: 205 tests, ~28-40s execution time
