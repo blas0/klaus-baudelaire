@@ -170,9 +170,9 @@ USER_PROMPT=$(echo "$INPUT" | jq -r '.prompt // empty')
 LOWER_PROMPT=$(echo "$USER_PROMPT" | tr '[:upper:]' '[:lower:]')
 PROMPT_LENGTH=${#USER_PROMPT}
 
-# Skip checks
+# Skip checks (allow /klaus commands through for tier routing)
 [[ "$SMART_DELEGATE_MODE" == "OFF" ]] && { echo '{}'; exit 0; }
-[[ "$USER_PROMPT" == /* ]] && { echo '{}'; exit 0; }
+[[ "$USER_PROMPT" == /* && ! "$USER_PROMPT" =~ ^/klaus[[:space:]] ]] && { echo '{}'; exit 0; }
 [[ "$PROMPT_LENGTH" -lt "$MIN_LENGTH" ]] && { echo '{}'; exit 0; }
 
 # [!] ASYNC MODE: Immediate provisional response + background analysis

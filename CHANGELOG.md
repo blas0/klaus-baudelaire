@@ -51,6 +51,14 @@ All notable changes to the Klaus Baudelaire plugin will be documented in this fi
 
 ---
 
+**1.0.2** | **Jan. 30th, 2026**
+
+- fixed slash command early-exit bug in klaus-delegation.sh line 175
+- fixed `/klaus` commands now properly trigger FULL tier routing and plan-orchestrator invocation
+- added explicit allowlist pattern `^/klaus[[:space:]]` to bypass slash command skip check
+
+---
+
 **1.0.0** | **Jan. 29th, 2026**
 
 - feature plugin release
