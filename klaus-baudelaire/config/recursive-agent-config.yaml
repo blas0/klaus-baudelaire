@@ -1,0 +1,149 @@
+# Recursive Agent Configuration
+# Configuration for RLM (Recursive Language Model) workflow system
+
+# ============================================================================
+# Chunking Configuration
+# ============================================================================
+chunking:
+  # Default chunk size in characters
+  default_size: 25000
+
+  # Overlap percentage between chunks (prevents boundary loss)
+  overlap_percent: 15
+
+  # Maximum number of chunks to process (safety limit)
+  max_chunks: 100
+
+  # Sentence-aware boundaries (avoid mid-sentence splits)
+  sentence_aware: true
+
+# ============================================================================
+# Pattern Configuration
+# ============================================================================
+patterns:
+  # Map-Reduce Pattern (Parallel Extraction)
+  map_reduce:
+    enabled: true
+    default: true  # DEFAULT pattern
+    max_parallel_workers: 5
+    batch_size: 5  # Process 5 chunks per batch
+
+  # Refine Pattern (Sequential State Management)
+  refine:
+    enabled: true
+    default: false  # FLAGGABLE pattern
+    checkpoint_interval: 10  # Context distillation every N chunks
+
+  # Scratchpad Pattern (Adaptive Multi-Hop)
+  scratchpad:
+    enabled: true
+    default: false  # FLAGGABLE pattern
+    max_recursion_depth: 5
+    investigation_timeout_ms: 30000
+
+# ============================================================================
+# State Management
+# ============================================================================
+state:
+  # Store state in task descriptions (Task API)
+  storage_method: task_api
+
+  # Maximum state size (triggers context distillation)
+  max_state_size_bytes: 51200  # 50KB
+
+  # Checkpoint frequency for Refine pattern
+  checkpoint_frequency: 10
+
+# ============================================================================
+# Model Configuration
+# ============================================================================
+models:
+  orchestrator: opus      # recursive-agent
+  worker: haiku          # chunk-analyzer
+  validator: sonnet      # conflict-resolver
+  aggregator: sonnet     # synthesis-agent
+
+# ============================================================================
+# Conflict Resolution
+# ============================================================================
+conflict_resolution:
+  # Deduplication strategies
+  strategies:
+    - exact_match
+    - normalized_match
+    - fuzzy_match
+    - semantic_match
+
+  # Fuzzy match threshold (0.0-1.0)
+  fuzzy_threshold: 0.85
+
+  # Confidence adjustment for conflicts
+  conflict_confidence_penalty: 0.15
+
+# ============================================================================
+# Report Generation
+# ============================================================================
+report:
+  # Output format
+  format: markdown
+
+  # Report sections
+  sections:
+    - executive_summary
+    - detailed_findings
+    - summary_statistics
+    - contradictions_and_flags
+    - methodology_notes
+    - appendices
+
+  # Include debug information
+  include_debug: false
+
+  # Auto-save report to file
+  auto_save: true
+  output_dir: ./reports
+
+# ============================================================================
+# Auto-Trigger Configuration (Optional)
+# ============================================================================
+trigger:
+  # Enable auto-detection hook
+  enabled: false  # User must explicitly enable
+
+  # Token threshold for suggesting recursive-agent
+  token_threshold: 50000
+
+  # Minimum confidence score for auto-suggestion (0.0-1.0)
+  min_confidence: 0.7
+
+# ============================================================================
+# Performance Tuning
+# ============================================================================
+performance:
+  # Background task timeout (milliseconds)
+  background_task_timeout_ms: 300000  # 5 minutes
+
+  # Worker processing timeout per chunk
+  worker_timeout_ms: 120000  # 2 minutes
+
+  # Enable parallel processing
+  parallel_enabled: true
+
+  # Memory optimization
+  stream_processing: true
+
+# ============================================================================
+# Logging & Debugging
+# ============================================================================
+logging:
+  # Log level: debug, info, warn, error
+  level: info
+
+  # Log workflow events
+  log_workflow_events: true
+
+  # Log state transitions
+  log_state_transitions: false
+
+  # Verbose output for debugging
+  verbose: false
