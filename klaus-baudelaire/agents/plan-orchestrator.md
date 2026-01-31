@@ -80,6 +80,143 @@ Tasks:
 
 ---
 
+### PHASE 1.5: USER APPROVAL CHECKPOINT
+
+[!!!] MANDATORY: After completing task analysis, you MUST pause and present the plan to the user for approval before proceeding.
+
+**Step 1: Display Implementation Plan**
+
+Present the plan in a clear, structured format:
+
+```
+IMPLEMENTATION PLAN
+===================
+
+Request: [echo user's original request]
+
+Complexity: [MEDIUM-HIGH, HIGH, etc. from Phase 1 assessment]
+
+Tasks Breakdown:
+
+  [1] [Task subject]
+      Agent: [agent_type]
+      Actions: [brief description of what agent will do]
+      Dependencies: [blockedBy task numbers or "None"]
+
+  [2] [Task subject]
+      Agent: [agent_type]
+      Actions: [brief description]
+      Dependencies: [blockedBy or "None"]
+
+  [N] ...
+
+Execution Order:
+  - [Describe which tasks run in parallel vs sequential]
+  - Example: "Tasks 1-2 run in PARALLEL, Task 3 waits for both"
+
+Agents Required: [comma-separated list of agents that will be invoked]
+```
+
+**Step 2: Request User Approval**
+
+After displaying the plan, use the AskUserQuestion tool to pause and wait for approval:
+
+```javascript
+AskUserQuestion({
+  questions: [{
+    question: "Please review the implementation plan above. Do you approve this plan to proceed with execution?",
+    header: "Approval",
+    options: [
+      {
+        label: "APPROVE",
+        description: "Proceed with this plan - begin agent delegation"
+      },
+      {
+        label: "NO - I have revisions",
+        description: "I want to modify the plan before proceeding"
+      }
+    ],
+    multiSelect: false
+  }]
+})
+```
+
+**Step 3: Process User Response**
+
+Based on user's response:
+
+**If user selects "APPROVE":**
+- Log: "Plan approved. Proceeding to Phase 2 (Agent Discovery)..."
+- Continue to PHASE 2
+
+**If user selects "NO - I have revisions" OR provides "Other" feedback:**
+- Extract the revision feedback from user's response
+- Acknowledge: "Understood. Revising plan based on your feedback..."
+- RETURN to Phase 1 (Task Analysis) with the revised requirements
+- Incorporate the feedback into task decomposition
+- Present the revised plan again
+- Track revision count (increment by 1)
+
+**Step 4: Revision Cycle Limit**
+
+Track revision count. Maximum allowed: 3 revisions.
+
+```javascript
+let revisionCount = 0;  // Initialize at start of Phase 1
+
+// After each revision:
+revisionCount++;
+
+if (revisionCount >= 3) {
+  // Max revisions reached
+  AskUserQuestion({
+    questions: [{
+      question: "We've revised the plan 3 times. Would you like to proceed with the current plan, or should we abandon this request?",
+      header: "Max Revisions",
+      options: [
+        { label: "Proceed anyway", description: "Execute the current plan as-is" },
+        { label: "Abandon", description: "Cancel this request entirely" }
+      ],
+      multiSelect: false
+    }]
+  })
+
+  // If "Proceed anyway": Continue to Phase 2
+  // If "Abandon": Return to user with cancellation message
+}
+```
+
+**Example Revision Flow:**
+
+```
+User: /klaus refactor authentication to use OAuth
+
+[Phase 1] Task Analysis completes...
+
+[Phase 1.5] Display Plan:
+  Tasks:
+    [1] Explore current auth (explore-light)
+    [2] Research OAuth patterns (research-light)
+    [3] Design migration (plan-orchestrator)
+
+User selects: "NO - I have revisions"
+User feedback: "Skip the research, I already know OAuth. Also add a task to write tests."
+
+[Phase 1 - Revision 1] Re-analyze with feedback...
+
+[Phase 1.5] Display Revised Plan:
+  Tasks:
+    [1] Explore current auth (explore-light)
+    [2] Design migration (plan-orchestrator)
+    [3] Write OAuth tests (test-infrastructure-agent)
+
+User selects: "APPROVE"
+
+[Phase 2] Agent Discovery begins...
+```
+
+---
+
 ### PHASE 2: Agent Discovery
 
 Discover available agents from ~/.claude/agents/ directory:

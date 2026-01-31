@@ -39,6 +39,16 @@ All notable changes to the Klaus Baudelaire plugin will be documented in this fi
 
 ---
 
+**1.0.4** | **Jan. 30th, 2026**
+
+- feature Phase 1.5 User Approval Checkpoint added to plan-orchestrator workflow
+- added AskUserQuestion integration for plan review before execution
+- added revision cycle support with max 3 iterations before forcing proceed/abandon
+- added structured plan display format showing tasks, agents, dependencies
+- optimized user control over agent delegation with APPROVE/NO flow
+
+---
+
 **1.0.1** | **Jan. 30th, 2026**
 
 - fixed install.sh now supports clone-anywhere installation with automatic source detection
