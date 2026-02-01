@@ -39,6 +39,26 @@ All notable changes to the Klaus Baudelaire plugin will be documented in this fi
 
 ---
 
+**1.0.6** | **Feb. 1st, 2026**
+
+- fixed [P0] Word boundary regex in SIMPLE_KEYWORDS - prevents "adjust" matching "just" false positives
+- added [P1] UI/feature detection keywords: cursor positioning, toggle/switch/button, mirror/sync
+- added [P2] Multi-feature detection - bullet point counting adds +2 score when 3+ items detected
+- added [P3] Delegation enforcement instructions injected into MEDIUM/FULL tier routing context
+- added tests/verify-audit-fixes.sh and tests/audit-fixes-test.sh for P0-P3 validation
+
+---
+
+**1.0.5** | **Jan. 30th, 2026**
+
+- fixed [P0] Agent resume interruption - replaced with RETURN-TO-PARENT pattern for plan approval
+- added [EXECUTE_APPROVED_PLAN] marker for execution mode detection in plan-orchestrator
+- added Parent Approval Handling Instructions injection in MEDIUM/FULL tier additionalContext
+- fixed [P3] Task-notification scoring skip - subagent communication no longer triggers routing
+- fixed test path errors in klaus-delegation-hook.test.sh for config and restore operations
+
+---
+
 **1.0.4** | **Jan. 30th, 2026**
 
 - feature Phase 1.5 User Approval Checkpoint added to plan-orchestrator workflow

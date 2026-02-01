@@ -174,6 +174,9 @@ PROMPT_LENGTH=${#USER_PROMPT}
 [[ "$SMART_DELEGATE_MODE" == "OFF" ]] && { echo '{}'; exit 0; }
 [[ "$USER_PROMPT" == /* && ! "$USER_PROMPT" =~ ^/klaus[[:space:]] ]] && { echo '{}'; exit 0; }
 
+# [P3 FIX] Skip scoring for task-notification messages (from subagent communication)
+[[ "$USER_PROMPT" =~ ^\<task-notification\> ]] && { echo '{}'; exit 0; }
+
 # [!!!] MANDATORY: Detect /klaus command for forced FULL tier + mandatory plan-orchestrator
 KLAUS_COMMAND=false
 if [[ "$USER_PROMPT" =~ ^/klaus[[:space:]] ]]; then
@@ -262,6 +265,13 @@ if [[ "$ENABLE_ASYNC_HOOKS" == "ON" ]]; then
         CONTEXT7_RELEVANT="true"
         ((SCORE += CONTEXT7_SCORE_BOOST))
       fi
+    fi
+
+    # [P2 FIX] Multi-feature detection: Count bullet points
+    BULLET_COUNT=$(echo "$USER_PROMPT" | grep -cE '^ *[-*•] |^[0-9]+\. ' || true)
+    if [[ $BULLET_COUNT -ge 3 ]]; then
+      ((SCORE += 2))
+      LENGTH_BONUSES+=("multi-feature (${BULLET_COUNT} bullets) (+2)")
     fi
 
     # Clamp score
@@ -361,6 +371,13 @@ if [[ "$ENABLE_CONTEXT7_DETECTION" == "ON" ]]; then
     CONTEXT7_RELEVANT="true"
     ((SCORE += CONTEXT7_SCORE_BOOST))
   fi
+fi
+
+# [P2 FIX] Multi-feature detection: Count bullet points
+BULLET_COUNT=$(echo "$USER_PROMPT" | grep -cE '^ *[-*•] |^[0-9]+\. ' || true)
+if [[ $BULLET_COUNT -ge 3 ]]; then
+  ((SCORE += 2))
+  LENGTH_BONUSES+=("multi-feature (${BULLET_COUNT} bullets) (+2)")
 fi
 
 [[ $SCORE -lt 0 ]] && SCORE=0
@@ -509,6 +526,31 @@ if [[ "$TIER" == "MEDIUM" || "$TIER" == "FULL" ]]; then
         ADDITIONAL_CONTEXT+="@\"plan-orchestrator (agent)\" - Decompose and delegate this task\n\n"
     fi
     ADDITIONAL_CONTEXT+="User Request: ${USER_PROMPT}\n\n"
+
+    # [P3 FIX] Delegation enforcement instructions
+    ADDITIONAL_CONTEXT+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+    ADDITIONAL_CONTEXT+="[!!!] DELEGATION ENFORCEMENT [!!!]\n"
+    ADDITIONAL_CONTEXT+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    ADDITIONAL_CONTEXT+="You are the Plan Orchestrator. You MUST:\n"
+    ADDITIONAL_CONTEXT+="1. NEVER write code yourself - delegate ALL implementation to specialized agents\n"
+    ADDITIONAL_CONTEXT+="2. NEVER edit files yourself - use Task tool to delegate edits\n"
+    ADDITIONAL_CONTEXT+="3. ONLY plan, delegate, monitor, and synthesize results\n\n"
+    ADDITIONAL_CONTEXT+="If you attempt implementation work, you violate your core purpose.\n"
+    ADDITIONAL_CONTEXT+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+
+    # [P0 FIX] Parent Approval Handling Instructions (RETURN-TO-PARENT pattern)
+    ADDITIONAL_CONTEXT+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+    ADDITIONAL_CONTEXT+="[APPROVAL FLOW - PARENT RESPONSIBILITY]\n"
+    ADDITIONAL_CONTEXT+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    ADDITIONAL_CONTEXT+="When plan-orchestrator returns a plan with 'STATUS: AWAITING_APPROVAL':\n\n"
+    ADDITIONAL_CONTEXT+="1. Display the plan to the user\n"
+    ADDITIONAL_CONTEXT+="2. Use AskUserQuestion to get approval:\n"
+    ADDITIONAL_CONTEXT+="   - Options: 'APPROVE' or 'NO - I have revisions'\n"
+    ADDITIONAL_CONTEXT+="3. On APPROVE: Re-invoke plan-orchestrator with:\n"
+    ADDITIONAL_CONTEXT+="   prompt: '[EXECUTE_APPROVED_PLAN]\\n\\nOriginal Request: ...\\n\\nApproved Plan: ...'\n"
+    ADDITIONAL_CONTEXT+="4. On REVISIONS: Re-invoke plan-orchestrator with revision feedback\n\n"
+    ADDITIONAL_CONTEXT+="[!!!] CRITICAL: Do NOT use 'resume' parameter - always create NEW Task invocation\n"
+    ADDITIONAL_CONTEXT+="[!!!] CRITICAL: Do NOT perform Write/Edit/Glob/Grep yourself after invoking plan-orchestrator\n"
     ADDITIONAL_CONTEXT+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
 
     # [!!!] Output valid UserPromptSubmit hook JSON

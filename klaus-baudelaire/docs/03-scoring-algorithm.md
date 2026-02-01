@@ -81,7 +81,20 @@ for entry in "${SIMPLE_KEYWORDS[@]}"; do
 done
 ```
 
-**Phase 5: Apply bounds**
+**Note (v1.0.6+):** SIMPLE_KEYWORDS use `\b` word boundaries to prevent false matches. For example, `\bjust\b` matches "just" but NOT "adjust" or "unjust".
+
+**Phase 5: Multi-Feature Detection (v1.0.6+)**
+
+```bash
+BULLET_COUNT=$(echo "$USER_PROMPT" | grep -cE '^ *[-*] |^[0-9]+\. ')
+if [[ $BULLET_COUNT -ge 3 ]]; then
+  ((SCORE += 2))
+fi
+```
+
+Prompts with 3+ bullet points (-, *, or numbered) receive a +2 complexity bonus.
+
+**Phase 6: Apply bounds**
 
 ```bash
 [[ $SCORE -lt 0 ]] && SCORE=0    # Floor at 0
@@ -153,6 +166,7 @@ Score = 0
 + Length bonuses (>100: +1, >200: +1, >400: +2)
 + COMPLEX_KEYWORDS matches (x weight per pattern)
 - SIMPLE_KEYWORDS matches (x weight per pattern)
++ Multi-feature bonus (3+ bullets: +2)
 = Final score (bounded 0-50)
 ```
 

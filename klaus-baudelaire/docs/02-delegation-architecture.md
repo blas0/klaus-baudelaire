@@ -131,6 +131,47 @@ Claude receives this as context and follows Klaus's recommended workflow autonom
 
 ---
 
+## Multi-Feature Detection (v1.0.6+)
+
+Klaus automatically detects multi-feature requests by counting bullet points in prompts:
+
+```
+Prompt with 3+ bullets --> +2 complexity score bonus
+```
+
+**Detected patterns:**
+- `- item` (dash bullets)
+- `* item` (asterisk bullets)
+- `1. item` (numbered lists)
+
+**Example:**
+```
+"Please implement:
+- Fix horizontal rule positioning
+- Add line numbers toggle
+- Update link dialog focus"
+```
+Result: 3 bullets detected, +2 score bonus applied.
+
+---
+
+## Delegation Enforcement (v1.0.6+)
+
+MEDIUM and FULL tier routing injects enforcement instructions preventing the main assistant from bypassing delegation:
+
+```
+[!!!] DELEGATION ENFORCEMENT [!!!]
+
+You are the Plan Orchestrator. You MUST:
+1. NEVER write code yourself - delegate ALL implementation to specialized agents
+2. NEVER edit files yourself - use Task tool to delegate edits
+3. ONLY plan, delegate, monitor, and synthesize results
+```
+
+This prevents workflow violations where the main assistant implements directly instead of delegating to worker agents.
+
+---
+
 ## MEDIUM/FULL Tier: Plan Agent Orchestration
 
 For MEDIUM and FULL tier tasks, Klaus injects Plan Agent orchestration instructions:

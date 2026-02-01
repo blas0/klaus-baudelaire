@@ -80,13 +80,40 @@ Tasks:
 
 ---
 
-### PHASE 1.5: USER APPROVAL CHECKPOINT
+### PHASE 1.5: USER APPROVAL CHECKPOINT (RETURN-TO-PARENT PATTERN)
 
-[!!!] MANDATORY: After completing task analysis, you MUST pause and present the plan to the user for approval before proceeding.
+[!!!] CRITICAL: This phase uses a RETURN-TO-PARENT pattern to avoid resume mechanism failures.
 
-**Step 1: Display Implementation Plan**
+**The Problem:**
+- AskUserQuestion within a subagent context causes resume failures
+- When the parent tries to resume with `resume: "agentId"`, it gets interrupted
+- This causes the main assistant to take over and bypass delegation
 
-Present the plan in a clear, structured format:
+**The Solution:**
+- plan-orchestrator presents the plan and RETURNS it to the parent
+- Parent (main assistant) handles user approval via AskUserQuestion
+- On approval, parent re-invokes plan-orchestrator with `[EXECUTE_APPROVED_PLAN]` marker
+
+---
+
+**Step 1: Check for Execution Mode**
+
+[!!!] FIRST, check if prompt contains `[EXECUTE_APPROVED_PLAN]` marker:
+
+```javascript
+if (prompt.includes("[EXECUTE_APPROVED_PLAN]")) {
+  // SKIP Phase 1 and Phase 1.5
+  // The approved plan is embedded in the prompt
+  // Parse the plan and proceed DIRECTLY to Phase 2
+  goto PHASE_2;
+}
+```
+
+---
+
+**Step 2: Display Implementation Plan (Planning Mode)**
+
+If NOT in execution mode, present the plan in a clear, structured format:
 
 ```
 IMPLEMENTATION PLAN
@@ -115,105 +142,90 @@ Execution Order:
   - Example: "Tasks 1-2 run in PARALLEL, Task 3 waits for both"
 
 Agents Required: [comma-separated list of agents that will be invoked]
+
+---
+STATUS: AWAITING_APPROVAL
+---
 ```
 
-**Step 2: Request User Approval**
+**Step 3: Return to Parent for Approval**
 
-After displaying the plan, use the AskUserQuestion tool to pause and wait for approval:
+[!!!] DO NOT use AskUserQuestion. Instead, RETURN immediately after displaying the plan.
 
+The parent (main assistant) will:
+1. See the plan output with `STATUS: AWAITING_APPROVAL`
+2. Present the plan to the user
+3. Use AskUserQuestion to get approval
+4. On approval, re-invoke plan-orchestrator with the execution marker
+
+---
+
+**Parent Assistant Instructions (Injected via hook):**
+
+When you receive a plan with `STATUS: AWAITING_APPROVAL`:
+
+1. Display the plan to the user
+2. Call AskUserQuestion:
 ```javascript
 AskUserQuestion({
   questions: [{
-    question: "Please review the implementation plan above. Do you approve this plan to proceed with execution?",
+    question: "Please review the implementation plan above. Do you approve?",
     header: "Approval",
     options: [
-      {
-        label: "APPROVE",
-        description: "Proceed with this plan - begin agent delegation"
-      },
-      {
-        label: "NO - I have revisions",
-        description: "I want to modify the plan before proceeding"
-      }
+      { label: "APPROVE", description: "Proceed with this plan" },
+      { label: "NO - I have revisions", description: "Modify the plan" }
     ],
     multiSelect: false
   }]
 })
 ```
 
-**Step 3: Process User Response**
-
-Based on user's response:
-
-**If user selects "APPROVE":**
-- Log: "Plan approved. Proceeding to Phase 2 (Agent Discovery)..."
-- Continue to PHASE 2
-
-**If user selects "NO - I have revisions" OR provides "Other" feedback:**
-- Extract the revision feedback from user's response
-- Acknowledge: "Understood. Revising plan based on your feedback..."
-- RETURN to Phase 1 (Task Analysis) with the revised requirements
-- Incorporate the feedback into task decomposition
-- Present the revised plan again
-- Track revision count (increment by 1)
-
-**Step 4: Revision Cycle Limit**
-
-Track revision count. Maximum allowed: 3 revisions.
-
+3. On "APPROVE": Re-invoke plan-orchestrator with:
 ```javascript
-let revisionCount = 0;  // Initialize at start of Phase 1
+Task({
+  subagent_type: "plan-orchestrator",
+  description: "Execute approved plan",
+  prompt: `[EXECUTE_APPROVED_PLAN]
 
-// After each revision:
-revisionCount++;
+Original Request: ${originalRequest}
 
-if (revisionCount >= 3) {
-  // Max revisions reached
-  AskUserQuestion({
-    questions: [{
-      question: "We've revised the plan 3 times. Would you like to proceed with the current plan, or should we abandon this request?",
-      header: "Max Revisions",
-      options: [
-        { label: "Proceed anyway", description: "Execute the current plan as-is" },
-        { label: "Abandon", description: "Cancel this request entirely" }
-      ],
-      multiSelect: false
-    }]
-  })
+Approved Plan:
+${approvedPlan}
 
-  // If "Proceed anyway": Continue to Phase 2
-  // If "Abandon": Return to user with cancellation message
-}
+Proceed directly to Phase 2 (Agent Discovery) and execute.`
+})
 ```
 
-**Example Revision Flow:**
+4. On "NO - revisions": Re-invoke plan-orchestrator with revision feedback:
+```javascript
+Task({
+  subagent_type: "plan-orchestrator",
+  description: "Revise plan with feedback",
+  prompt: `${originalRequest}
 
+[REVISION_FEEDBACK]
+${userFeedback}
+[/REVISION_FEEDBACK]
+
+Please revise the plan based on the feedback above.`
+})
 ```
-User: /klaus refactor authentication to use OAuth
 
-[Phase 1] Task Analysis completes...
+---
 
-[Phase 1.5] Display Plan:
-  Tasks:
-    [1] Explore current auth (explore-light)
-    [2] Research OAuth patterns (research-light)
-    [3] Design migration (plan-orchestrator)
+**Step 4: Revision Cycle Tracking**
 
-User selects: "NO - I have revisions"
-User feedback: "Skip the research, I already know OAuth. Also add a task to write tests."
+Track revision count via metadata. Maximum allowed: 3 revisions.
 
-[Phase 1 - Revision 1] Re-analyze with feedback...
-
-[Phase 1.5] Display Revised Plan:
-  Tasks:
-    [1] Explore current auth (explore-light)
-    [2] Design migration (plan-orchestrator)
-    [3] Write OAuth tests (test-infrastructure-agent)
-
-User selects: "APPROVE"
-
-[Phase 2] Agent Discovery begins...
+If revision count >= 3, include in plan output:
 ```
+---
+STATUS: MAX_REVISIONS_REACHED
+REVISION_COUNT: 3
+---
+```
+
+Parent should then ask user to proceed or abandon.
 
 ---
 
