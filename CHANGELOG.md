@@ -39,6 +39,10 @@ All notable changes to the Klaus Baudelaire plugin will be documented in this fi
 
 ---
 
+
+
+---
+
 **1.0.0** | **Jan. 29th, 2026**
 
 - feature plugin release

@@ -1,0 +1,25 @@
+{
+  "name": "klaus-baudelaire-marketplace",
+  "description": "Official Klaus Baudelaire plugin marketplace",
+  "owner": {
+    "name": "Klaus Baudelaire Contributors"
+  },
+  "plugins": [
+    {
+      "name": "klaus-baudelaire",
+      "source": ".",
+      "description": "The Polymathic Delegation System - Intelligent task routing with tiered workflow management, smart agent orchestration, and project memory scaffolding for Claude Code",
+      "version": "1.0.0-pre",
+      "keywords": [
+        "delegation",
+        "workflow",
+        "agents",
+        "productivity",
+        "task-routing",
+        "memory-management",
+        "orchestration",
+        "claude-code-plugin"
+      ]
+    }
+  ]
+}
