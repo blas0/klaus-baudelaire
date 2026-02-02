@@ -4,6 +4,7 @@
 
 > [!NOTE]
 > Klaus Baudelaire is live! Changes are being made hourly as of 2/2/2026
+
 > To update, run `git pull` in the klaus-baudelaire directory & run the `install.sh` within `.system/` dir
 
 <p align="center">
