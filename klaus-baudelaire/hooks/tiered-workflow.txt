@@ -80,9 +80,35 @@ TASK PLANNING (all tiers)
     • Mark completed when done
 
 ═══════════════════════════════
-IMPLEMENTATION (all tiers)
+IMPLEMENTATION DELEGATION (MEDIUM/FULL tiers)
 ═══════════════════════════════
-[1] IMPLEMENTATION: Edit/Write → follow plan
+[!!!] After discovery phase completes, delegate to implementer agents:
+
+[1] CONTEXT COLLECTION: Gather all findings from discovery agents
+    • TaskGet for explore-light, docs-specialist, research-light results
+    • Extract files_affected, findings, patterns_found
+
+[2] IMPLEMENTATION TASK CREATION: Create discrete implementation tasks
+    • Include ALL context from discovery phase in task description
+    • Set metadata.agent_type = "implementer"
+    • Set dependencies via blockedBy if needed
+
+[3] IMPLEMENTER INVOCATION: Use deterministic invocation syntax
+    invoke 2 @"implementer (agent)" agents in parallel
+
+    [!] Replace '2' with number of parallel implementation tasks
+    [!] Use 'sequential' instead of 'parallel' if tasks have dependencies
+
+[4] TASK CLAIM: Implementer agents self-assign via TaskUpdate
+    • Each implementer checks TaskList for pending agent_type: "implementer" tasks
+    • Claims task by setting status: "in_progress" and owner
+    • Implements based on description and context
+    • Reports results via TaskUpdate with status: "completed"
+
+═══════════════════════════════
+IMPLEMENTATION (LIGHT tier - no plan-orchestrator)
+═══════════════════════════════
+[1] IMPLEMENTATION: Edit/Write directly after explore-light
     • Check TaskList before starting
     • Update relevant tasks to in_progress
     • Mark completed when done
@@ -91,6 +117,13 @@ IMPLEMENTATION (all tiers)
 
 [NEW] SPECIALIZED AGENTS (Optional):
 ═══════════════════════════════
+• @"implementer" [PRIMARY implementation agent - MEDIUM/FULL tiers]
+  → Invoked AFTER discovery phase completes via plan-orchestrator
+  → Receives pre-gathered context from explore-light, docs-specialist, etc.
+  → Writes/edits code based on task descriptions
+  → Uses Sonnet model for quality output
+  → HAS Edit, Write, Bash, Context7 tools
+  → Deterministic invocation: invoke N @"implementer (agent)" agents in parallel
 • @"docs-specialist" [PRIMARY documentation gatherer - ALL TIERS including DIRECT]
   → Called FIRST for libraries, frameworks, APIs, packages, SDKs
   → Fetches ONLY from official sources (tier 1: developer.apple.com, docs.python.org)
@@ -104,8 +137,9 @@ IMPLEMENTATION (all tiers)
   → HAS Context7 tools for library best practices lookup
 • @"test-infrastructure-agent" [when setting up tests or test infrastructure]
   → HAS Context7 tools for test framework documentation
-• @"explore-light" [quick codebase exploration]
+• @"explore-light" [DISCOVERY ONLY - quick codebase exploration]
   → HAS Context7 resolve-library-id for library identification
+  → DOES NOT have Edit/Write tools - discovery only, NOT implementation
 • @"reminder-nudger-agent" [for progress monitoring and strategic guidance]
 
 Execute autonomously. Max 3 test fix attempts.
