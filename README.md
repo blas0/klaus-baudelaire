@@ -9,7 +9,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/github/stars/blas0/klaus-baudelaire?style=flat&color=yellow" alt="GitHub Stars" />
-  <img src="https://img.shields.io/badge/Claude_Code-2.1.25-orange" alt="Claude Code" />
+  <img src="https://img.shields.io/badge/Claude_Code-2.1.29-orange" alt="Claude Code" />
   <img src="https://img.shields.io/badge/Tasks-Create_•_Get_•_Update_•_List-blue" alt="Tasks" />
   <a href="https://x.com/nrx_co"><img src="https://img.shields.io/badge/-@nrx__co-black?logo=x&logoColor=white" alt="X" /></a>
 </p>
