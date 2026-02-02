@@ -5,7 +5,7 @@
 2. The @tests/ | @tools/ dirs are EXPLICITLY for the developer of this plugin.
 
   - Ensure ANY FILE OR FOLDER within `klaus-baudelaire/` contain NOTHING in relation to the `tools/` & `tests/` dirs.
-    - The ONLY "test" related files are in: `klaus-baudelaire/commands/klaus-test.md` | `klaus-baudelaire/.system`  
+    - The ONLY "test" related files are in: `klaus-baudelaire/commands/klaus-test.md` | `klaus-baudelaire/.system`
 
 # EXPLICIT INSTRUCTIONS:
 
