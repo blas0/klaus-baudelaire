@@ -3,7 +3,8 @@
 </p>
 
 > [!NOTE]
-> Not available publicly yet. Doing comprehensive sweeps of documentation and delegation architecture.
+> Klaus Baudelaire is live! Changes are being made hourly as of 2/2/2026
+> To update, run `git pull` in the klaus-baudelaire directory & run the `install.sh` within `.system/` dir
 
 <p align="center">
   <img src="https://img.shields.io/github/stars/blas0/klaus-baudelaire?style=flat&color=yellow" alt="GitHub Stars" />
