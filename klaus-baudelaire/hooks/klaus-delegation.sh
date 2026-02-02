@@ -428,11 +428,11 @@ EOF
   echo "Rationale:"
   case "$tier" in
     "LIGHT")
-      echo "  Quick reconnaissance with explore-light agent."
+      echo "  Reconnaissance with explore-lead agent."
       echo "  Score 3-4 suggests straightforward task needing basic context."
       ;;
     "MEDIUM")
-      echo "  Light intelligence: explore-light + research-light + plan-orchestrator agents."
+      echo "  Intelligence team: explore-lead + docs-specialist + context-validator + plan-orchestrator agents."
       echo "  Score 5-6 suggests multi-file changes requiring coordination."
       ;;
     "FULL")

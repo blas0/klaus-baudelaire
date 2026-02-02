@@ -1,7 +1,7 @@
 ---
 name: docs-specialist
 description: PRIMARY documentation gatherer for all libraries, frameworks, APIs, packages, and SDKs. Fetches official documentation from authoritative sources (Context7 + official sites). Handles ALL documentation gathering before research agents search the web. Use for any doc-related query. Available in ALL tiers.
-model: haiku
+model: sonnet
 tools: mcp__context7__resolve-library-id, mcp__context7__query-docs, WebSearch, WebFetch, Read, Write, TaskUpdate, TaskGet, TaskList
 color: cyan
 ---

@@ -37,7 +37,8 @@ The Feature Flag Detection System provides runtime feature gates for enabling an
 | Flag | Default | Controls |
 |------|---------|----------|
 | `ENABLE_WEB_RESEARCHER` | OFF | web-research-specialist agent |
-| `ENABLE_DOCS_SPECIALIST` | ON | docs-specialist agent |
+| `ENABLE_DOCS_SPECIALIST` | ON | docs-specialist agent (sonnet model) |
+| `ENABLE_CONTEXT_VALIDATOR` | ON | context-validator agent (sonnet model) |
 | `ENABLE_FILE_PATH_EXTRACTOR` | ON | file-path-extractor agent |
 | `ENABLE_TEST_INFRASTRUCTURE` | OFF | test-infrastructure-agent |
 | `ENABLE_REMINDER_SYSTEM` | OFF | reminder-nudger-agent |
@@ -62,7 +63,7 @@ The Feature Flag Detection System provides runtime feature gates for enabling an
 ### Characteristics
 
 - **Bash 3 compatible** (no associative arrays, works on macOS default shell)
-- **11 registered flags** with human-readable descriptions
+- **12 registered flags** with human-readable descriptions
 - **Automatic backup** before modifications (timestamped `.backup` files)
 - **Flag validation** against registry (prevents typos and invalid operations)
 - **Value validation** (ON/OFF only)

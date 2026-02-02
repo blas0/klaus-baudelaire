@@ -17,7 +17,7 @@ IF {{TIER}} = FULL → plan-orchestrator invoked (custom context from hook)
 
 PHASE 1-LIGHT: Quick Context
 ═══════════════════════════════
-Primary agent: @"explore-light (agent)"
+Primary agent: @"explore-lead (agent)"
   → HAS Context7 resolve-library-id for library identification
 
 Optional agents (feature-flagged):
@@ -25,24 +25,21 @@ Optional agents (feature-flagged):
   → HAS Context7 tools for library/API documentation
 • @"docs-specialist (agent)" [if ENABLE_DOCS_SPECIALIST=ON, default ON]
   → Fetches from official sources ONLY (developer.apple.com, not forums)
-  → HAS Context7 tools, WebSearch, WebFetch, haiku model for speed
+  → HAS Context7 tools, WebSearch, WebFetch, sonnet model for quality
 
 Then proceed to IMPLEMENTATION.
 
-PHASE 1-MEDIUM: Light Intelligence
+PHASE 1-MEDIUM: Intelligence Team
 ═══════════════════════════════
 Launch in parallel:
-• @"explore-light (agent)"
+• @"explore-lead (agent)"
   → HAS Context7 resolve-library-id for library identification
-• @"research-light (agent)" if needed
-  → HAS Context7 resolve-library-id for quick library lookups
-  → Validates docs-specialist findings, does NOT search for documentation
 • @"docs-specialist (agent)" [PRIMARY for ALL documentation needs]
   → Fetches from official sources ONLY (docs.python.org, react.dev, not blogs)
-  → HAS Context7 tools, WebSearch, WebFetch, haiku model for speed
+  → HAS Context7 tools, WebSearch, WebFetch, sonnet model for quality
 • @"file-path-extractor (agent)" [on bash command output]
 
-Then @"plan-orchestrator (agent)" → IMPLEMENTATION.
+Then @"context-validator (agent)" validates gathered context → @"plan-orchestrator (agent)" → IMPLEMENTATION.
 
 PHASE 1-FULL: Full Intelligence
 ═══════════════════════════════
@@ -56,7 +53,7 @@ Launch in parallel:
 • @"explore-lead (agent)"
 • @"docs-specialist (agent)" [PRIMARY for ALL documentation - called FIRST]
   → Fetches from official sources ONLY (developer.apple.com, swift.org, not forums)
-  → HAS Context7 tools, WebSearch, WebFetch, haiku model for speed
+  → HAS Context7 tools, WebSearch, WebFetch, sonnet model for quality
   → Returns findings to research-lead for validation
 • @"research-lead (agent)"
   → Validates docs-specialist findings (quality, completeness, official source)
@@ -66,7 +63,7 @@ Launch in parallel:
   → HAS Context7 tools for library/API documentation
 • @"file-path-extractor (agent)" [on bash output]
 
-Then @"plan-orchestrator (agent)" → TASK PLANNING → IMPLEMENTATION.
+Then @"context-validator (agent)" validates gathered context → @"plan-orchestrator (agent)" → TASK PLANNING → IMPLEMENTATION.
 
 ═══════════════════════════════
 TASK PLANNING (all tiers)
@@ -85,8 +82,8 @@ IMPLEMENTATION DELEGATION (MEDIUM/FULL tiers)
 [!!!] After discovery phase completes, delegate to implementer agents:
 
 [1] CONTEXT COLLECTION: Gather all findings from discovery agents
-    • TaskGet for explore-light, docs-specialist, research-light results
-    • Extract files_affected, findings, patterns_found
+    • TaskGet for explore-lead, docs-specialist, context-validator results
+    • Extract files_affected, findings, patterns_found, validation_status
 
 [2] IMPLEMENTATION TASK CREATION: Create discrete implementation tasks
     • Include ALL context from discovery phase in task description
@@ -108,7 +105,7 @@ IMPLEMENTATION DELEGATION (MEDIUM/FULL tiers)
 ═══════════════════════════════
 IMPLEMENTATION (LIGHT tier - no plan-orchestrator)
 ═══════════════════════════════
-[1] IMPLEMENTATION: Edit/Write directly after explore-light
+[1] IMPLEMENTATION: Edit/Write directly after explore-lead
     • Check TaskList before starting
     • Update relevant tasks to in_progress
     • Mark completed when done
@@ -128,7 +125,7 @@ IMPLEMENTATION (LIGHT tier - no plan-orchestrator)
   → Called FIRST for libraries, frameworks, APIs, packages, SDKs
   → Fetches ONLY from official sources (tier 1: developer.apple.com, docs.python.org)
   → Returns findings to research agents for validation, does NOT delegate
-  → HAS Context7 tools (resolve-library-id, query-docs), WebSearch, WebFetch, haiku model
+  → HAS Context7 tools (resolve-library-id, query-docs), WebSearch, WebFetch, sonnet model
 • @"web-research-specialist" [for non-documentation web research]
   → Validates docs-specialist findings, does NOT search for documentation
   → HAS Context7 tools for library/API documentation
@@ -137,9 +134,11 @@ IMPLEMENTATION (LIGHT tier - no plan-orchestrator)
   → HAS Context7 tools for library best practices lookup
 • @"test-infrastructure-agent" [when setting up tests or test infrastructure]
   → HAS Context7 tools for test framework documentation
-• @"explore-light" [DISCOVERY ONLY - quick codebase exploration]
-  → HAS Context7 resolve-library-id for library identification
-  → DOES NOT have Edit/Write tools - discovery only, NOT implementation
+• @"context-validator" [VALIDATION - sits between discovery and implementation]
+  → Validates version compatibility, breaking changes, syntax differences
+  → Checks gathered context against project reality (package.json, config files)
+  → Returns GO/CAUTION/NO-GO recommendation before implementation proceeds
+  → HAS Context7 tools, WebSearch, Read, Grep, Glob, sonnet model
 • @"reminder-nudger-agent" [for progress monitoring and strategic guidance]
 
 Execute autonomously. Max 3 test fix attempts.
