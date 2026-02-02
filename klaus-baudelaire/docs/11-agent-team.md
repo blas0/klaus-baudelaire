@@ -87,6 +87,18 @@ Sets up test infrastructure with a preference for `bun:test`. Configures test ru
 
 READ-ONLY monitor that detects stagnation. Identifies stuck tasks, blocked dependencies, and analysis paralysis. Injects steering reminders without modifying task state.
 
+### implementer
+
+| Property | Value |
+|----------|-------|
+| **Model** | Sonnet |
+| **Purpose** | Code implementation after context collection |
+| **Tools** | Read, Grep, Glob, Edit, Write, Bash, Context7 (resolve-library-id, query-docs), TaskUpdate, TaskGet, TaskList |
+| **When Used** | MEDIUM and FULL tier (after discovery phase) |
+| **Feature Flag** | ENABLE_IMPLEMENTER (ON by default) |
+
+Implementation specialist that writes code based on pre-gathered context. Receives findings from discovery agents (explore-light, docs-specialist, research-light) and implements features. Uses Sonnet model for quality output. Invoked via deterministic syntax: `invoke N @"implementer (agent)" agents in parallel`.
+
 ---
 
 ## Research Agents (Built-in Pattern)
@@ -98,11 +110,11 @@ These agents derive from Claude Code's native agent architecture.
 | Property | Value |
 |----------|-------|
 | **Model** | Haiku |
-| **Purpose** | Quick codebase reconnaissance |
-| **Tools** | Read, Grep, Glob, Edit, Write, TaskUpdate, TaskList |
+| **Purpose** | DISCOVERY ONLY - Quick codebase reconnaissance |
+| **Tools** | Glob, Grep, Read, Context7 (resolve-library-id), TaskUpdate, TaskGet, TaskList |
 | **When Used** | LIGHT, MEDIUM tier |
 
-Fast, lightweight exploration of the codebase. Reads files, searches patterns, and provides quick context.
+Fast, lightweight discovery agent. Finds files, searches patterns, and gathers basic context. Does NOT have Edit/Write tools - discovery only, not implementation. Use with file-path-extractor for context gathering.
 
 ### explore-lead
 
@@ -148,6 +160,7 @@ Quick web lookups without spawning subagents. Fast answers for straightforward r
 | **Model** | Haiku |
 | **Purpose** | Refactoring suggestions for clarity |
 | **Tools** | Read, Write, Edit, TaskUpdate, TaskList |
+| **Feature Flag** | ENABLE_CODE_SIMPLIFIER (OFF by default) |
 
 Analyzes code for complexity and suggests simplifications. Focuses on readability, maintainability, and adherence to project patterns.
 
@@ -158,6 +171,7 @@ Analyzes code for complexity and suggests simplifications. Focuses on readabilit
 | **Model** | Sonnet |
 | **Purpose** | Extract and document codebase patterns |
 | **Tools** | Read, Write, Grep, Glob |
+| **Feature Flag** | ENABLE_COMPOSTER (ON by default) |
 
 Used by the `/compost` command. Reads source files, identifies recurring patterns, and documents them as project standards.
 
@@ -168,6 +182,7 @@ Used by the `/compost` command. Reads source files, identifies recurring pattern
 | **Model** | Haiku |
 | **Purpose** | Advanced git operations |
 | **Tools** | Bash, Read, Write, TaskUpdate, TaskList |
+| **Feature Flag** | ENABLE_GIT_ORCHESTRATOR (OFF by default) |
 
 Handles complex git operations: interactive rebase, conflict resolution, history manipulation. Uses a dual-pathway OODA loop with safety-first principles (backup refs, pre-flight checks, rollback strategies).
 
@@ -176,6 +191,8 @@ Handles complex git operations: interactive rebase, conflict resolution, history
 ## RLM (Recursive Language Model) Agents
 
 For large document analysis (50K+ tokens).
+
+**Feature Flag**: `ENABLE_RLM_AGENTS` (OFF by default) - Controls all RLM agents: recursive-agent, chunk-analyzer, conflict-resolver, synthesis-agent.
 
 ### Pattern Selection
 
