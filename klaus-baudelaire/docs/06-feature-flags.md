@@ -32,15 +32,36 @@ The Feature Flag Detection System provides runtime feature gates for enabling an
 
 ## Registered Feature Flags
 
-### Agent Flags
+### Core Agent Flags (Essential - Keep ON)
+
+| Flag | Default | Controls |
+|------|---------|----------|
+| `ENABLE_IMPLEMENTER` | ON | implementer agent (Sonnet model, code implementation after discovery) |
+| `ENABLE_DOCS_SPECIALIST` | ON | docs-specialist agent (Haiku model, documentation fetching) |
+| `ENABLE_FILE_PATH_EXTRACTOR` | ON | file-path-extractor agent (context tracking) |
+
+### Optional Agent Flags
 
 | Flag | Default | Controls |
 |------|---------|----------|
 | `ENABLE_WEB_RESEARCHER` | OFF | web-research-specialist agent |
-| `ENABLE_DOCS_SPECIALIST` | ON | docs-specialist agent |
-| `ENABLE_FILE_PATH_EXTRACTOR` | ON | file-path-extractor agent |
 | `ENABLE_TEST_INFRASTRUCTURE` | OFF | test-infrastructure-agent |
 | `ENABLE_REMINDER_SYSTEM` | OFF | reminder-nudger-agent |
+| `ENABLE_SUB_DELEGATION` | OFF | Agent sub-delegation capability |
+
+### Utility Agent Flags
+
+| Flag | Default | Controls |
+|------|---------|----------|
+| `ENABLE_CODE_SIMPLIFIER` | OFF | code-simplifier agent (refactoring suggestions) |
+| `ENABLE_COMPOSTER` | ON | composter agent (/compost command) |
+| `ENABLE_GIT_ORCHESTRATOR` | OFF | git-orchestrator agent (advanced git operations) |
+
+### RLM Agent Flags (Large Document Analysis 50K+ tokens)
+
+| Flag | Default | Controls |
+|------|---------|----------|
+| `ENABLE_RLM_AGENTS` | OFF | recursive-agent, chunk-analyzer, conflict-resolver, synthesis-agent |
 
 ### System Flags
 
@@ -50,7 +71,6 @@ The Feature Flag Detection System provides runtime feature gates for enabling an
 | `ENABLE_ASYNC_HOOKS` | OFF | Non-blocking hook execution |
 | `ENABLE_ROUTING_HISTORY` | OFF | Privacy-first routing telemetry |
 | `ENABLE_GITHUB_ACTIONS` | OFF | CI/CD integration templates |
-| `ENABLE_SUB_DELEGATION` | OFF | Agent sub-delegation capability |
 | `ROUTING_EXPLANATION` | ON | Routing decision transparency |
 
 ---
@@ -62,7 +82,7 @@ The Feature Flag Detection System provides runtime feature gates for enabling an
 ### Characteristics
 
 - **Bash 3 compatible** (no associative arrays, works on macOS default shell)
-- **11 registered flags** with human-readable descriptions
+- **16 registered flags** with human-readable descriptions
 - **Automatic backup** before modifications (timestamped `.backup` files)
 - **Flag validation** against registry (prevents typos and invalid operations)
 - **Value validation** (ON/OFF only)
@@ -135,7 +155,7 @@ ENABLE_WEB_RESEARCHER="ON"
 
 ```bash
 /klaus feature list
-# Shows all 11 flags with ON/OFF status
+# Shows all 16 flags with ON/OFF status
 ```
 
 ---

@@ -180,11 +180,39 @@ For MEDIUM and FULL tier tasks, Klaus injects Plan Agent orchestration instructi
 2. **Agent Discovery** - Match sub-tasks to specialized agents
 3. **Task Delegation** - Create TaskCreate entries with dependencies
 4. **Monitor Progress** - Track agent completion via TaskList
+4.5. **Implementation Delegation** - Delegate code writing to implementer agents
 5. **Synthesize Results** - Merge findings from multiple agents
 6. **Quality Assurance** - Verify completeness before returning
 7. **Return Summary** - Present structured results to user
 
 See [Plan Agent Orchestration](09-plan-orchestration.md) for full details.
+
+---
+
+## Discovery vs Implementation Separation
+
+Klaus separates **discovery** (context gathering) from **implementation** (code writing) to optimize model selection:
+
+### Discovery Agents (Haiku - Fast/Cheap)
+- **explore-light** - Codebase reconnaissance, file finding, pattern searching
+- **docs-specialist** - Documentation fetching from official sources
+- **research-light** - Quick web lookups
+
+[!] Discovery agents do NOT have Edit/Write tools - they gather context only.
+
+### Implementation Agents (Sonnet - Quality)
+- **implementer** - Code writing, file editing, feature development
+
+[!] After discovery agents gather context, plan-orchestrator delegates implementation tasks to implementer agents using deterministic syntax:
+
+```
+invoke N @"implementer (agent)" agents in parallel
+```
+
+This separation ensures:
+- Fast, cheap context gathering via Haiku
+- Quality code output via Sonnet
+- Clear responsibility boundaries between agents
 
 ---
 

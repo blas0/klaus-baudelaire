@@ -50,7 +50,7 @@ git clone https://github.com/blas0/klaus-baudelaire ~/klaus-baudelaire
 - **Merges** settings.json hooks (preserves your existing hooks)
 - **Preserves** your CLAUDE.md and config customizations
 
-[Full Installation Guide -->](docs/01-installation.md)
+[Full Installation Guide -->](klaus-baudelaire/docs/01-installation.md)
 
 ---
 
@@ -97,7 +97,7 @@ git clone https://github.com/blas0/klaus-baudelaire ~/klaus-baudelaire
 | **MEDIUM** | 5-6 | explore-light + research-light + plan-orchestrator | Multi-file changes |
 | **FULL** | 7+ | explore-lead + docs-specialist + research-lead + file-path-extractor + plan-orchestrator | Architecture, complex features |
 
-[Delegation Architecture -->](docs/02-delegation-architecture.md) | [Scoring Algorithm -->](docs/03-scoring-algorithm.md)
+[Delegation Architecture -->](klaus-baudelaire/docs/02-delegation-architecture.md) | [Scoring Algorithm -->](klaus-baudelaire/docs/03-scoring-algorithm.md)
 
 ---
 
@@ -113,7 +113,7 @@ Score = 0
 
 **Example**: "Set up OAuth with tests" = "set up tests" (+3) + "oauth" (+2) = **5 = MEDIUM**
 
-[Configuration & Keywords -->](docs/04-configuration-keywords.md)
+[Configuration & Keywords -->](klaus-baudelaire/docs/04-configuration-keywords.md)
 
 ---
 
@@ -129,14 +129,15 @@ Score = 0
 | `/suggestkeywords` | Analyze routing telemetry for optimization |
 | `/klaus-test` | Run system diagnostics |
 
-[Memory Management -->](docs/10-memory-management.md)
+[Memory Management -->](klaus-baudelaire/docs/10-memory-management.md)
 
 ---
 
-## Agents (17)
+## Agents (18)
 
 **Delegation Specialists**:
 - **plan-orchestrator** (Sonnet) -- Primary delegator for MEDIUM/FULL tasks
+- **implementer** (Sonnet) -- Code implementation after discovery phase [NEW]
 - **docs-specialist** (Haiku) -- Official documentation lookup
 - **web-research-specialist** (Sonnet) -- Deep web research
 - **file-path-extractor** (Haiku) -- File path tracking
@@ -145,7 +146,7 @@ Score = 0
 
 **Research Agents**:
 - **explore-lead** (Sonnet) -- Comprehensive codebase exploration for FULL tier
-- **explore-light** (Haiku) -- Quick codebase recon
+- **explore-light** (Haiku) -- Discovery-only codebase recon (no Edit/Write)
 - **research-lead** (Opus) -- Research coordination
 - **research-light** (Haiku) -- Quick web research
 
@@ -157,7 +158,7 @@ Score = 0
 - **conflict-resolver** (Sonnet) -- Deduplication and conflict resolution
 - **synthesis-agent** (Sonnet) -- Final report generation
 
-[Agent Team Reference -->](docs/11-agent-team.md)
+[Agent Team Reference -->](klaus-baudelaire/docs/11-agent-team.md)
 
 ---
 
@@ -175,7 +176,7 @@ Klaus implements heavy TaskList coordination across 11 agents:
 
 Press `Ctrl+T` in Claude Code to see task progress.
 
-[Task Management -->](docs/12-task-management.md)
+[Task Management -->](klaus-baudelaire/docs/12-task-management.md)
 
 ---
 
@@ -183,11 +184,11 @@ Press `Ctrl+T` in Claude Code to see task progress.
 
 | # | System | Purpose |
 |---|--------|---------|
-| 1 | [Profile System](docs/05-profile-system.md) | Conservative/balanced/aggressive routing |
-| 2 | [Feature Flags](docs/06-feature-flags.md) | Runtime agent/capability toggles |
-| 3 | [Coverage Tracking](docs/07-coverage-tracking.md) | PS4-based Bash code coverage |
-| 4 | [Production Testing](docs/08-production-testing.md) | Sandbox deployment pipeline |
-| 5 | [Plan Orchestration](docs/09-plan-orchestration.md) | 7-phase agent delegation |
+| 1 | [Profile System](klaus-baudelaire/docs/05-profile-system.md) | Conservative/balanced/aggressive routing |
+| 2 | [Feature Flags](klaus-baudelaire/docs/06-feature-flags.md) | Runtime agent/capability toggles |
+| 3 | [Coverage Tracking](klaus-baudelaire/docs/07-coverage-tracking.md) | PS4-based Bash code coverage |
+| 4 | [Production Testing](klaus-baudelaire/docs/08-production-testing.md) | Sandbox deployment pipeline |
+| 5 | [Plan Orchestration](klaus-baudelaire/docs/09-plan-orchestration.md) | 7-phase agent delegation |
 
 ---
 
@@ -200,15 +201,30 @@ SMART_DELEGATE_MODE="ON"          # Enable/disable Klaus
 TIER_LIGHT_MIN=3                  # Score thresholds
 TIER_MEDIUM_MIN=5
 TIER_FULL_MIN=7
-ENABLE_WEB_RESEARCHER="OFF"       # Agent feature flags
-ENABLE_FILE_PATH_EXTRACTOR="ON"
-ENABLE_TEST_INFRASTRUCTURE="OFF"
-ENABLE_REMINDER_SYSTEM="OFF"
+
+# CORE agent flags (essential - keep ON)
+ENABLE_IMPLEMENTER="ON"           # implementer agent (sonnet, code implementation)
+ENABLE_DOCS_SPECIALIST="ON"       # docs-specialist agent (documentation)
+ENABLE_FILE_PATH_EXTRACTOR="ON"   # file-path-extractor agent
+
+# OPTIONAL agent flags
+ENABLE_WEB_RESEARCHER="OFF"       # web-research-specialist agent
+ENABLE_TEST_INFRASTRUCTURE="OFF"  # test-infrastructure-agent
+ENABLE_REMINDER_SYSTEM="OFF"      # reminder-nudger-agent
+
+# UTILITY agent flags
+ENABLE_CODE_SIMPLIFIER="OFF"      # code-simplifier agent
+ENABLE_COMPOSTER="ON"             # composter agent (/compost command)
+ENABLE_GIT_ORCHESTRATOR="OFF"     # git-orchestrator agent
+
+# RLM agent flags (large document analysis)
+ENABLE_RLM_AGENTS="OFF"           # recursive-agent, chunk-analyzer, etc.
+
 ROUTING_EXPLANATION="ON"          # Show routing rationale
 DEBUG_MODE="OFF"                  # Debug logging
 ```
 
-[Configuration Reference -->](docs/04-configuration-keywords.md) | [Profiles -->](docs/05-profile-system.md)
+[Configuration Reference -->](klaus-baudelaire/docs/04-configuration-keywords.md) | [Profiles -->](klaus-baudelaire/docs/05-profile-system.md)
 
 ---
 
@@ -233,7 +249,7 @@ bun tests/integration-tests.ts        # 12 routing tests
 
 **Total**: 205 tests, ~28-40s execution time
 
-[Testing Guide -->](docs/14-testing-verification.md)
+[Testing Guide -->](klaus-baudelaire/docs/14-testing-verification.md)
 
 ---
 
@@ -246,7 +262,7 @@ Klaus registers 1 hook (`UserPromptSubmit`) which invokes `klaus-delegation.sh`.
 - **routing-telemetry.sh** -- Privacy-first routing analytics
 - **rlm-workflow-coordinator.sh** -- Recursive agent orchestration
 
-[Hooks System -->](docs/13-hooks-system.md)
+[Hooks System -->](klaus-baudelaire/docs/13-hooks-system.md)
 
 ---
 
@@ -260,7 +276,7 @@ Klaus registers 1 hook (`UserPromptSubmit`) which invokes `klaus-delegation.sh`.
 
 **Need debug?** Set `DEBUG_MODE="ON"` in `~/.claude/klaus-delegation.conf`
 
-[Full Troubleshooting -->](docs/15-troubleshooting.md)
+[Full Troubleshooting -->](klaus-baudelaire/docs/15-troubleshooting.md)
 
 ---
 
@@ -268,11 +284,11 @@ Klaus registers 1 hook (`UserPromptSubmit`) which invokes `klaus-delegation.sh`.
 
 All detailed documentation:
 
-01. [Installation](docs/01-installation.md) | 02. [Architecture](docs/02-delegation-architecture.md) | 03. [Scoring](docs/03-scoring-algorithm.md)
-04. [Keywords](docs/04-configuration-keywords.md) | 05. [Profiles](docs/05-profile-system.md) | 06. [Feature Flags](docs/06-feature-flags.md)
-07. [Coverage](docs/07-coverage-tracking.md) | 08. [Sandbox](docs/08-production-testing.md) | 09. [Plan Agent](docs/09-plan-orchestration.md)
-10. [Memory](docs/10-memory-management.md) | 11. [Agents](docs/11-agent-team.md) | 12. [Tasks](docs/12-task-management.md)
-13. [Hooks](docs/13-hooks-system.md) | 14. [Testing](docs/14-testing-verification.md) | 15. [Troubleshooting](docs/15-troubleshooting.md)
+01. [Installation](klaus-baudelaire/docs/01-installation.md) | 02. [Architecture](klaus-baudelaire/docs/02-delegation-architecture.md) | 03. [Scoring](klaus-baudelaire/docs/03-scoring-algorithm.md)
+04. [Keywords](klaus-baudelaire/docs/04-configuration-keywords.md) | 05. [Profiles](klaus-baudelaire/docs/05-profile-system.md) | 06. [Feature Flags](klaus-baudelaire/docs/06-feature-flags.md)
+07. [Coverage](klaus-baudelaire/docs/07-coverage-tracking.md) | 08. [Sandbox](klaus-baudelaire/docs/08-production-testing.md) | 09. [Plan Agent](klaus-baudelaire/docs/09-plan-orchestration.md)
+10. [Memory](klaus-baudelaire/docs/10-memory-management.md) | 11. [Agents](klaus-baudelaire/docs/11-agent-team.md) | 12. [Tasks](klaus-baudelaire/docs/12-task-management.md)
+13. [Hooks](klaus-baudelaire/docs/13-hooks-system.md) | 14. [Testing](klaus-baudelaire/docs/14-testing-verification.md) | 15. [Troubleshooting](klaus-baudelaire/docs/15-troubleshooting.md)
 
 ---
 

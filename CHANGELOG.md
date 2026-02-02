@@ -1,6 +1,17 @@
 **Append changes to the changelog file below this line**
 ---
 
+**1.0.3** | **Feb. 2nd, 2026**
+
+- fixed README.md doc links from docs/ to klaus-baudelaire/docs/
+- added implementer agent to README agent list (18 agents total)
+- added explore-light discovery-only designation to README
+- added new feature flag categories to README Configuration section
+- optimized docs/06-feature-flags.md with CORE, OPTIONAL, UTILITY, RLM flag categories (16 flags)
+- added Discovery vs Implementation Separation section to docs/02-delegation-architecture.md
+
+---
+
 
 
 ---
