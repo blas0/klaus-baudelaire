@@ -79,11 +79,13 @@ git clone https://github.com/blas0/klaus-baudelaire ~/klaus-baudelaire
         | 0-2    | | 3-4    |        | 5-6      | | 7+     |
         +--------+ +----+---+        +-----+----+ +---+----+
         Execute     explore-         explore-       explore-
-        immediately light            light +        lead +
-                                     research-      research-
-                                     light +        lead +
-                                     plan-          web-research-
-                                     orchestrator   specialist +
+        immediately lead             lead +         lead +
+                                     docs-          research-
+                                     specialist +   lead +
+                                     context-       docs-
+                                     validator +    specialist +
+                                     plan-          context-
+                                     orchestrator   validator +
                                                     plan-
                                                     orchestrator
 ```
@@ -95,9 +97,9 @@ git clone https://github.com/blas0/klaus-baudelaire ~/klaus-baudelaire
 | Tier | Score | Agents | Use Case |
 |------|-------|--------|----------|
 | **DIRECT** | 0-2 | None | Simple edits, typos |
-| **LIGHT** | 3-4 | explore-light | Basic features, quick research |
-| **MEDIUM** | 5-6 | explore-light + research-light + plan-orchestrator | Multi-file changes |
-| **FULL** | 7+ | explore-lead + docs-specialist + research-lead + file-path-extractor + plan-orchestrator | Architecture, complex features |
+| **LIGHT** | 3-4 | explore-lead | Basic features, quick research |
+| **MEDIUM** | 5-6 | explore-lead + docs-specialist + context-validator + plan-orchestrator | Multi-file changes |
+| **FULL** | 7+ | explore-lead + research-lead + docs-specialist + context-validator + file-path-extractor + plan-orchestrator | Architecture, complex features |
 
 [Delegation Architecture -->](klaus-baudelaire/docs/02-delegation-architecture.md) | [Scoring Algorithm -->](klaus-baudelaire/docs/03-scoring-algorithm.md)
 
@@ -135,22 +137,21 @@ Score = 0
 
 ---
 
-## Agents (18)
+## Agents (17)
 
 **Delegation Specialists**:
 - **plan-orchestrator** (Sonnet) -- Primary delegator for MEDIUM/FULL tasks
-- **implementer** (Sonnet) -- Code implementation after discovery phase [NEW]
-- **docs-specialist** (Haiku) -- Official documentation lookup
+- **docs-specialist** (Sonnet) -- Official documentation lookup
+- **context-validator** (Sonnet) -- Validates context before implementation (GO/CAUTION/NO-GO)
 - **web-research-specialist** (Sonnet) -- Deep web research
 - **file-path-extractor** (Haiku) -- File path tracking
 - **test-infrastructure-agent** (Sonnet) -- Test setup
 - **reminder-nudger-agent** (Haiku) -- Stagnation detection
+- **implementer** (Sonnet) -- Code implementation after discovery
 
 **Research Agents**:
-- **explore-lead** (Sonnet) -- Comprehensive codebase exploration for FULL tier
-- **explore-light** (Haiku) -- Discovery-only codebase recon (no Edit/Write)
+- **explore-lead** (Sonnet) -- Comprehensive codebase exploration for all tiers
 - **research-lead** (Opus) -- Research coordination
-- **research-light** (Haiku) -- Quick web research
 
 **Utility**: code-simplifier, composter, git-orchestrator
 
@@ -205,8 +206,8 @@ TIER_MEDIUM_MIN=5
 TIER_FULL_MIN=7
 
 # CORE agent flags (essential - keep ON)
-ENABLE_IMPLEMENTER="ON"           # implementer agent (sonnet, code implementation)
-ENABLE_DOCS_SPECIALIST="ON"       # docs-specialist agent (documentation)
+ENABLE_DOCS_SPECIALIST="ON"       # docs-specialist agent (Sonnet)
+ENABLE_CONTEXT_VALIDATOR="ON"     # context-validator agent (Sonnet)
 ENABLE_FILE_PATH_EXTRACTOR="ON"   # file-path-extractor agent
 
 # OPTIONAL agent flags

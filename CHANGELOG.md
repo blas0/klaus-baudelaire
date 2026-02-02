@@ -1,77 +1,94 @@
-**Append changes to the changelog file below this line**
----
+# Changelog
 
-**1.0.3** | **Feb. 2nd, 2026**
+All notable changes to Klaus Baudelaire will be documented in this file.
 
-- fixed README.md doc links from docs/ to klaus-baudelaire/docs/
-- added implementer agent to README agent list (18 agents total)
-- added explore-light discovery-only designation to README
-- added new feature flag categories to README Configuration section
-- optimized docs/06-feature-flags.md with CORE, OPTIONAL, UTILITY, RLM flag categories (16 flags)
-- added Discovery vs Implementation Separation section to docs/02-delegation-architecture.md
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.0.3] - 2026-02-02
 
+### Added
+- **context-validator agent** (Sonnet) - New validation phase between discovery and implementation
+  - Validates version compatibility, breaking changes, and syntax differences
+  - Compares documentation against project reality (package.json, requirements.txt, config files)
+  - Returns GO/CAUTION/NO-GO recommendation before implementation proceeds
+  - Tools: Read, Grep, Glob, WebSearch, Context7, TaskUpdate, TaskGet, TaskList
+  - Feature flag: `ENABLE_CONTEXT_VALIDATOR` (ON by default)
+
+### Changed
+- **docs-specialist upgraded from Haiku to Sonnet model**
+  - Better synthesis and reduced interpretation errors when fetching documentation
+  - Prevents version mismatches (e.g., Tailwind CSS v3 docs for v4 projects)
+
+- **explore-lead now used for all tiers** (LIGHT, MEDIUM, FULL)
+  - Replaces explore-light for consistent quality exploration
+  - Uses Sonnet model instead of Haiku
+
+- **Tier agent routing updated**:
+  | Tier | Before | After |
+  |------|--------|-------|
+  | LIGHT | explore-light | explore-lead |
+  | MEDIUM | explore-light + research-light + plan-orchestrator | explore-lead + docs-specialist + context-validator + plan-orchestrator |
+  | FULL | explore-lead + research-lead + docs-specialist + web-research-specialist + file-path-extractor + plan-orchestrator | Same + context-validator |
+
+### Removed
+- **explore-light agent** - Replaced by explore-lead for better quality
+- **research-light agent** - Functionality consolidated into docs-specialist and explore-lead
+
+### Fixed
+- Root cause of "too much interpretability" issues during delegation
+  - Haiku agents were misinterpreting documentation versions
+  - Context validation now catches version conflicts before implementation
+
+### Documentation
+- Updated `02-delegation-architecture.md` with new tier routing
+- Updated `06-feature-flags.md` with ENABLE_CONTEXT_VALIDATOR flag
+- Updated `11-agent-team.md` with context-validator and model changes
+- Updated `tiered-workflow.txt` with new agent workflows
+- Updated `klaus-delegation.conf` with CORE/OPTIONAL agent flag categories
+
+### Notes
+- Net agent count: 18 -> 17 (removed 2, added 1)
+- Model allocation strategy: Haiku phased out for discovery, Sonnet for quality, Opus for research coordination
+
+---
+
+## [1.0.2] - 2026-01-27
+
+### Added
+- Profile system (conservative/balanced/aggressive routing)
+- Multi-feature detection (+2 score bonus for 3+ bullet prompts)
+- Delegation enforcement instructions for MEDIUM/FULL tiers
 
 ---
 
-**1.0.2** | **Feb. 2nd, 2026**
+## [1.0.1] - 2026-01-26
 
-- added feature flags for all 18 agents organized into CORE, OPTIONAL, UTILITY, and RLM categories
-- added ENABLE_CODE_SIMPLIFIER, ENABLE_COMPOSTER, ENABLE_GIT_ORCHESTRATOR, ENABLE_RLM_AGENTS flags
-- optimized flag organization: CORE agents (implementer, docs-specialist, file-path-extractor) marked essential
+### Added
+- E2E test calibration for keyword weights
+- Context7 keyword detection and scoring
 
----
-
-**1.0.1** | **Feb. 2nd, 2026**
-
-- added implementer agent (Sonnet model) for quality code implementation after discovery phase
-- fixed explore-light to be discovery-only by removing Edit/Write tools
-- added Phase 4.5: Implementation Delegation to plan-orchestrator workflow
-- added ENABLE_IMPLEMENTER feature flag (ON by default) to klaus-delegation.conf
-- optimized agent hierarchy: discovery agents (Haiku) gather context, implementer agents (Sonnet) write code
-- added deterministic invocation syntax for parallel/sequential implementer execution
+### Fixed
+- Keyword weight calibration based on test results
 
 ---
 
-**1.0.0** | **Jan. 29th, 2026**
+## [1.0.0] - 2026-01-25
 
-- feature plugin release
-
----
-
-### EXPLICIT CHANGELOG INSTRUCTIONS
-
-All notable changes to the Klaus Baudelaire plugin will be documented in this file.
-
-**Format changes by following this template:**
-
-**Flags: `fixed`, `added`, `optimized`, `removed`, `feature`**
-
-**Versioning: Linear versioning (ex. 1.0.0 -> 1.0.1 -> 1.0.2 -> ...)**
-
-```
-**<version>** | **<date>**
-
-- <flag> <description of modification in 20 words or less>
-- <flag> <description of modification in 20 words or less>
-- <flag> <description of modification in 20 words or less>
-- <flag> <description of modification in 20 words or less>
+### Added
+- Initial release of Klaus Baudelaire
+- 4-tier routing system (DIRECT, LIGHT, MEDIUM, FULL)
+- 18 specialized agents
+- TaskList coordination across agents
+- Feature flag system
+- Complexity scoring algorithm
+- Hook-based automatic routing
 
 ---
 
-```
-
-```
----
-
-**1.0.0** | **Jan. 28th, 2026**
-
-- fixed bug in login functionality
-- added support for multiple languages
-- optimized performance by 20%
-- removed redundant feature within user dashboard
-
----
-```
+[1.0.3]: https://github.com/blas0/klaus-baudelaire/compare/v1.0.2...v1.0.3
+[1.0.2]: https://github.com/blas0/klaus-baudelaire/compare/v1.0.1...v1.0.2
+[1.0.1]: https://github.com/blas0/klaus-baudelaire/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/blas0/klaus-baudelaire/releases/tag/v1.0.0

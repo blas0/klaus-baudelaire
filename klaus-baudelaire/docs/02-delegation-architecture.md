@@ -17,9 +17,9 @@ Klaus routes tasks to 4 tiers based on complexity scores:
 | Tier | Score | What Klaus Does | Agents Invoked | Use Cases |
 |------|-------|-----------------|----------------|-----------|
 | **DIRECT** | 0-2 | Executes immediately (no coordination) | None | Simple edits, typos, single-file changes |
-| **LIGHT** | 3-4 | Quick reconnaissance | explore-light | Straightforward features, basic research |
-| **MEDIUM** | 5-6 | Light intelligence team | explore-light + research-light + plan-orchestrator | Multi-file changes, moderate complexity |
-| **FULL** | 7+ | Full research committee | explore-lead + docs-specialist + research-lead + file-path-extractor + plan-orchestrator | Complex features, architecture changes |
+| **LIGHT** | 3-4 | Reconnaissance | explore-lead | Straightforward features, basic research |
+| **MEDIUM** | 5-6 | Intelligence team | explore-lead + docs-specialist + context-validator + plan-orchestrator | Multi-file changes, moderate complexity |
+| **FULL** | 7+ | Full research committee | explore-lead + docs-specialist + research-lead + context-validator + file-path-extractor + plan-orchestrator | Complex features, architecture changes |
 
 ---
 
@@ -34,7 +34,7 @@ Your Prompt --> Klaus Analyzes --> Calculates Score --> Determines Tier --> Coor
 1. **You type**: "Set up OAuth with tests and CI/CD integration"
 2. **Klaus analyzes**: Matches keywords (oauth:+2, tests:+3, ci/cd:+2) = Score: 7
 3. **Klaus determines**: Score 7 = FULL tier (comprehensive intelligence)
-4. **Klaus coordinates**: Spawns explore-lead + research-lead + web-research-specialist + plan-orchestrator agents
+4. **Klaus coordinates**: Spawns explore-lead + research-lead + docs-specialist + context-validator + plan-orchestrator agents
 5. **Claude executes**: Follows workflow autonomously with full context
 
 **Result**: Comprehensive research, planning, and implementation without manual agent orchestration.
@@ -75,8 +75,8 @@ Bypass automatic routing and force **FULL tier execution** on demand:
 - Maximize throughput for complex tasks
 
 **Examples**:
-- MEDIUM tier: `explore-light` + `research-light` in parallel, then `plan-orchestrator`
-- FULL tier: `explore-lead` + `research-lead` + `web-research-specialist` + `docs-specialist` + `file-path-extractor` all in parallel
+- MEDIUM tier: `explore-lead` + `docs-specialist` in parallel, then `context-validator`, then `plan-orchestrator`
+- FULL tier: `explore-lead` + `research-lead` + `web-research-specialist` + `docs-specialist` + `file-path-extractor` in parallel, then `context-validator`
 
 ### Sequential Execution (Dependency Chain)
 
@@ -86,8 +86,8 @@ Bypass automatic routing and force **FULL tier execution** on demand:
 - Implementation must wait for planning
 
 **Examples**:
-- LIGHT tier: `explore-light` then implementation (sequential)
-- All tiers: Research/Exploration then `plan-orchestrator` then Implementation (sequential phases)
+- LIGHT tier: `explore-lead` then implementation (sequential)
+- MEDIUM/FULL: Research/Exploration then `context-validator` then `plan-orchestrator` then Implementation (sequential phases)
 
 ### Documentation Delegation Pattern (2-Attempt Validation)
 

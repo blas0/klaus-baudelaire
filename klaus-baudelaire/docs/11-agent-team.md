@@ -31,13 +31,25 @@ Plans and orchestrates complex work without writing code. Decomposes tasks, sele
 
 | Property | Value |
 |----------|-------|
-| **Model** | Haiku |
+| **Model** | Sonnet |
 | **Purpose** | PRIMARY documentation gatherer |
 | **Tools** | Context7 (resolve-library-id, query-docs), WebSearch, WebFetch, Read, Write, TaskUpdate, TaskList |
 | **When Used** | All tiers (documentation needs) |
 | **Feature Flag** | ENABLE_DOCS_SPECIALIST |
 
-The first agent consulted for documentation. Uses official sources (developer.apple.com, docs.python.org, react.dev) before community sources. Follows a 2-attempt validation protocol with research-lead.
+The first agent consulted for documentation. Uses official sources (developer.apple.com, docs.python.org, react.dev) before community sources. Follows a 2-attempt validation protocol with research-lead. Upgraded to Sonnet model for better synthesis and reduced interpretation errors.
+
+### context-validator
+
+| Property | Value |
+|----------|-------|
+| **Model** | Sonnet |
+| **Purpose** | Validates gathered context before implementation |
+| **Tools** | Read, Grep, Glob, WebSearch, Context7 (resolve-library-id, query-docs), TaskUpdate, TaskGet, TaskList |
+| **When Used** | MEDIUM and FULL tier (after discovery, before implementation) |
+| **Feature Flag** | ENABLE_CONTEXT_VALIDATOR |
+
+Sits between discovery and implementation phases. Catches version conflicts, breaking changes, and known gotchas before implementer agents write code. Compares documentation versions against installed versions (package.json, requirements.txt). Returns GO/CAUTION/NO-GO validation status with specific recommendations.
 
 ### web-research-specialist
 
@@ -97,7 +109,7 @@ READ-ONLY monitor that detects stagnation. Identifies stuck tasks, blocked depen
 | **When Used** | MEDIUM and FULL tier (after discovery phase) |
 | **Feature Flag** | ENABLE_IMPLEMENTER (ON by default) |
 
-Implementation specialist that writes code based on pre-gathered context. Receives findings from discovery agents (explore-light, docs-specialist, research-light) and implements features. Uses Sonnet model for quality output. Invoked via deterministic syntax: `invoke N @"implementer (agent)" agents in parallel`.
+Implementation specialist that writes code based on pre-gathered context. Receives findings from discovery agents (explore-lead, docs-specialist, context-validator) and implements features. Uses Sonnet model for quality output. Invoked via deterministic syntax: `invoke N @"implementer (agent)" agents in parallel`.
 
 ---
 
@@ -105,27 +117,16 @@ Implementation specialist that writes code based on pre-gathered context. Receiv
 
 These agents derive from Claude Code's native agent architecture.
 
-### explore-light
-
-| Property | Value |
-|----------|-------|
-| **Model** | Haiku |
-| **Purpose** | DISCOVERY ONLY - Quick codebase reconnaissance |
-| **Tools** | Glob, Grep, Read, Context7 (resolve-library-id), TaskUpdate, TaskGet, TaskList |
-| **When Used** | LIGHT, MEDIUM tier |
-
-Fast, lightweight discovery agent. Finds files, searches patterns, and gathers basic context. Does NOT have Edit/Write tools - discovery only, not implementation. Use with file-path-extractor for context gathering.
-
 ### explore-lead
 
 | Property | Value |
 |----------|-------|
 | **Model** | Sonnet |
-| **Purpose** | Comprehensive codebase exploration for FULL tier |
+| **Purpose** | Comprehensive codebase exploration for all tiers |
 | **Tools** | Glob, Grep, Read, Context7 (resolve-library-id), TaskUpdate, TaskGet, TaskList, Edit, Write, Bash |
-| **When Used** | FULL tier |
+| **When Used** | LIGHT, MEDIUM, FULL tier |
 
-Deep architectural analysis for complex tasks. Maps system architecture, identifies patterns, tracks cross-file dependencies, and provides comprehensive codebase understanding. Distinct from explore-light (haiku, quick) - explore-lead provides thorough multi-file exploration with architectural insights.
+Deep architectural analysis for all tasks. Maps system architecture, identifies patterns, tracks cross-file dependencies, and provides comprehensive codebase understanding. Now used across all tiers (replaced explore-light) for consistent quality exploration.
 
 ### research-lead
 
@@ -137,17 +138,6 @@ Deep architectural analysis for complex tasks. Maps system architecture, identif
 | **When Used** | FULL tier |
 
 The only agent with TaskCreate capability (besides plan-orchestrator). Coordinates multi-source research, decomposes complex research tasks, and validates documentation findings.
-
-### research-light
-
-| Property | Value |
-|----------|-------|
-| **Model** | Haiku |
-| **Purpose** | Quick web research |
-| **Tools** | WebSearch, WebFetch, Read, TaskUpdate, TaskList |
-| **When Used** | MEDIUM tier |
-
-Quick web lookups without spawning subagents. Fast answers for straightforward research questions.
 
 ---
 
@@ -272,7 +262,7 @@ For MEDIUM/FULL tier tasks, the Plan agent automatically selects and delegates t
 | Role | Agents | Tools |
 |------|--------|-------|
 | **Task Creators** | research-lead, plan-orchestrator | TaskCreate, TaskUpdate, TaskList |
-| **Task Executors** | explore-light, research-light, docs-specialist, web-research-specialist, file-path-extractor, code-simplifier, test-infrastructure-agent, git-orchestrator, composter | TaskUpdate, TaskList |
+| **Task Executors** | explore-lead, docs-specialist, context-validator, web-research-specialist, file-path-extractor, code-simplifier, test-infrastructure-agent, git-orchestrator, composter | TaskUpdate, TaskList |
 | **Task Monitor** | reminder-nudger-agent | TaskGet, TaskList (READ-ONLY) |
 
 ---

@@ -36,8 +36,8 @@ The Feature Flag Detection System provides runtime feature gates for enabling an
 
 | Flag | Default | Controls |
 |------|---------|----------|
-| `ENABLE_IMPLEMENTER` | ON | implementer agent (Sonnet model, code implementation after discovery) |
-| `ENABLE_DOCS_SPECIALIST` | ON | docs-specialist agent (Haiku model, documentation fetching) |
+| `ENABLE_DOCS_SPECIALIST` | ON | docs-specialist agent (Sonnet model, documentation fetching) |
+| `ENABLE_CONTEXT_VALIDATOR` | ON | context-validator agent (Sonnet model, GO/CAUTION/NO-GO validation) |
 | `ENABLE_FILE_PATH_EXTRACTOR` | ON | file-path-extractor agent (context tracking) |
 
 ### Optional Agent Flags
