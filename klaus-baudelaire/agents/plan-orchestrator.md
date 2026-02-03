@@ -884,6 +884,62 @@ Task({ subagent_type: "test-infrastructure-agent", blocking: true })
 - Ask user: "This requires [capability] which no agent has. Should I attempt with [closest agent]?"
 - Suggest manual approach
 
+### 5. Sibling Tool Call Error Isolation
+
+**Problem**: When multiple tool calls execute in parallel, one failure can cascade to siblings.
+
+**Detection Pattern**:
+```
+<tool_use_error>Sibling tool call errored</tool_use_error>
+```
+
+This error appears when:
+- You call multiple tools in one message (parallel execution)
+- One tool fails (e.g., Bash command errors)
+- Claude Code cancels sibling tool calls that were running concurrently
+
+**Example Scenario**:
+```javascript
+// RISKY: Parallel calls where one might fail
+Bash({ command: "bun run build" })        // Might fail if syntax error
+TaskUpdate({ taskId: "X", status: "completed" })  // Gets cancelled!
+```
+
+**Recovery Protocol**:
+
+1. **Separate Critical Operations**: Never combine potentially-failing operations (Bash, file writes) with TaskUpdate in same message.
+   ```javascript
+   // CORRECT: Sequential, isolated operations
+   // Message 1:
+   Bash({ command: "bun run build" })
+
+   // Message 2 (after success):
+   TaskUpdate({ taskId: "X", status: "completed" })
+   ```
+
+2. **Document Partial Completion**: If sibling error occurs, note it in task metadata:
+   ```javascript
+   TaskUpdate({
+     taskId: "X",
+     metadata: {
+       findings: ["Sibling tool error occurred - some operations may have failed"],
+       recommendations: ["Verify all file operations completed"]
+     }
+   })
+   ```
+
+3. **Retry Isolation Pattern**: After sibling error, retry failed operations individually:
+   ```javascript
+   // Retry the operation that was cancelled
+   TaskUpdate({ taskId: "X", status: "completed" })
+   ```
+
+**Prevention Rules**:
+- [!] NEVER mix Bash with TaskUpdate in parallel
+- [!] NEVER mix Write/Edit with TaskUpdate in parallel
+- [!!] Always verify operation success BEFORE updating task status
+- [!!] Use sequential message flow for critical state changes
+
 ---
 
 ## TASK COORDINATION PROTOCOL

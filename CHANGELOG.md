@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.5] - 2026-02-03
+
+### Added
+- **Implementer Safety Protocols** - Hardening based on LOGANALYSIS.md recommendations
+  - Safe File Writing Protocol: Detects `${}` template literals, routes to Write tool (R-003)
+  - Directory Preparation Protocol: Ensures `mkdir -p` before file creation (R-006)
+  - Pre-Build Type Verification: Runs `bun tsc --noEmit` after .tsx modifications (R-004)
+  - Completion Verification Protocol: Confirms files exist before TaskUpdate(completed) (R-005)
+  - TypeScript Best Practices: Prefers `React.ReactNode` over `JSX.Element` (R-010)
+
+- **dev-server-guard.sh** - New PreToolUse hook for Bash tool (R-002)
+  - Detects existing dev server processes before allowing new ones
+  - Checks common ports (3000, 3001, 5173, 8080, 4321, 5000, 8000)
+  - Checks lock files (.next/dev/lock, .vite/dev)
+  - Non-blocking warning with recovery options
+
+- **file-lock-coordinator.sh** - New PreToolUse/PostToolUse hook for Write/Edit (R-009)
+  - Prevents parallel file write collisions
+  - Session-based lock ownership
+  - 5-minute automatic lock timeout
+  - Lock directory: `~/.claude/locks/`
+
+- **Sibling Tool Call Error Isolation** - plan-orchestrator recovery protocol (R-008)
+  - Detection pattern for `<tool_use_error>Sibling tool call errored</tool_use_error>`
+  - Sequential isolation for critical operations (never mix Bash with TaskUpdate)
+  - Retry isolation pattern for cancelled operations
+
+### Documentation
+- Updated `docs/11-agent-team.md` with implementer safety protocols
+- Updated `docs/13-hooks-system.md` with new hooks documentation
+- Updated `docs/15-troubleshooting.md` with file size limits section (R-011)
+
+### Notes
+- Recommendations R-001 (atomic TaskCreate) and R-007 (TaskBatchUpdate) require Claude Code core changes and are out of scope
+- Implementation based on comprehensive log analysis from LOGANALYSIS.md
+
+---
+
 ## [1.0.4] - 2026-02-02
 
 ### Added
@@ -105,6 +143,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+[1.0.5]: https://github.com/blas0/klaus-baudelaire/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/blas0/klaus-baudelaire/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/blas0/klaus-baudelaire/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/blas0/klaus-baudelaire/compare/v1.0.1...v1.0.2

@@ -69,8 +69,10 @@ See [Scoring Algorithm](03-scoring-algorithm.md) and [Delegation Architecture](0
 
 **IMPORTANT**: Only `klaus-delegation.sh` is registered in `hooks.json` as a Claude Code hook. All other hook scripts are **sourced internally** by klaus-delegation.sh.
 
-**Registered Hook** (in hooks.json):
+**Registered Hooks** (in hooks.json):
 - `klaus-delegation.sh` - Registered for `UserPromptSubmit` event
+- `dev-server-guard.sh` - Registered for `PreToolUse` (Bash) - Detects dev server conflicts
+- `file-lock-coordinator.sh` - Registered for `PreToolUse`/`PostToolUse` (Write|Edit) - Prevents parallel write collisions
 
 **Internally Sourced Scripts** (NOT independently registered):
 - `klaus-session-state.sh` - Session management (async)
@@ -165,6 +167,63 @@ ASYNC_DEBUG_MODE="OFF"             # Enable async-specific debug logging
     ]
   }
 }
+```
+
+---
+
+## Dev Server Guard (v1.0.5)
+
+**Script**: `dev-server-guard.sh`
+**Event**: PreToolUse (Bash)
+
+Detects potential dev server conflicts before starting new dev servers.
+
+**Checks**:
+- Common dev ports (3000, 3001, 5173, 8080, 4321, 5000, 8000)
+- Lock files (.next/dev/lock, .vite/dev)
+
+**Triggers on commands**:
+- `next dev`, `bun run dev`, `npm run dev`, `yarn dev`, `vite`, `astro dev`
+
+**Output** (if conflict detected):
+```
+[DEV SERVER GUARD] Potential conflict detected:
+  [!] Port 3000 in use by node (PID: 12345)
+  [!] Lock file exists: .next/dev/lock
+
+[?] A dev server may already be running.
+Options:
+1. Kill existing process: kill -9 <PID>
+2. Use different port: --port <number>
+3. Proceed anyway (may cause "port in use" error)
+```
+
+---
+
+## File Lock Coordinator (v1.0.5)
+
+**Script**: `file-lock-coordinator.sh`
+**Events**: PreToolUse/PostToolUse (Write|Edit)
+
+Prevents parallel file write collisions when multiple agents work concurrently.
+
+**Lock Location**: `~/.claude/locks/[hash].lock`
+
+**Lock Lifecycle**:
+1. PreToolUse: Acquire lock for file path
+2. PostToolUse: Release lock after operation
+
+**Lock Timeout**: 5 minutes (stale locks auto-cleaned)
+
+**Output** (if collision detected):
+```
+[FILE LOCK] Write collision detected:
+  File: /path/to/file.tsx
+  Locked by session: abc123
+  Lock age: 45s
+
+[!!] Another agent may be writing to this file.
+     Wait for completion or verify no conflict exists.
 ```
 
 ---

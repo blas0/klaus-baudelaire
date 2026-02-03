@@ -111,6 +111,13 @@ READ-ONLY monitor that detects stagnation. Identifies stuck tasks, blocked depen
 
 Implementation specialist that writes code based on pre-gathered context. Receives findings from discovery agents (explore-lead, docs-specialist, context-validator) and implements features. Uses Sonnet model for quality output. Invoked via deterministic syntax: `invoke N @"implementer (agent)" agents in parallel`.
 
+**Safety Protocols** (v1.0.5):
+- Safe File Writing: Detects `${}` template literals and routes to Write tool (avoids Bash heredoc corruption)
+- Directory Preparation: Ensures `mkdir -p` before file creation
+- Pre-Build Type Verification: Runs `bun tsc --noEmit` after .tsx modifications
+- Completion Verification: Confirms files exist and compile before TaskUpdate(completed)
+- TypeScript Best Practices: Prefers `React.ReactNode` over `JSX.Element`
+
 ---
 
 ## Research Agents (Built-in Pattern)

@@ -177,6 +177,140 @@ Bash({
 - Use `mcp__context7__resolve-library-id` to identify libraries
 - Use `mcp__context7__query-docs` for specific API usage
 
+---
+
+## Safety Protocols
+
+### 1. Safe File Writing Protocol
+
+[!!!] **CRITICAL**: Detect template literals and route appropriately.
+
+When writing file content containing `${...}` template expressions:
+
+**Problem**: Bash heredocs interpret `${variable}` as shell expansion, corrupting JSX/TypeScript code.
+
+**Detection Rule**:
+```
+IF content contains "${" THEN
+  -> Use Write tool (NOT Bash heredoc)
+  -> NEVER use: cat <<EOF ... EOF
+  -> NEVER use: cat <<'EOF' ... EOF (still risky with special chars)
+```
+
+**Safe Patterns**:
+```javascript
+// CORRECT: Use Write tool for any content with ${}
+Write({
+  file_path: "/path/to/Component.tsx",
+  content: "const MyComponent = () => <div>{${someVar}}</div>"
+})
+
+// WRONG: Bash heredoc will corrupt ${} expressions
+Bash({ command: "cat <<EOF > file.tsx\n${props.name}\nEOF" })  // CORRUPTED!
+```
+
+**When Bash heredoc IS safe**:
+- Plain text without `$`, `` ` ``, or `\` characters
+- Configuration files with static values
+- Markdown without code blocks containing template literals
+
+### 2. Directory Preparation Protocol
+
+[!] Before ANY file creation, ensure parent directory exists.
+
+**Rule**: Always run `mkdir -p` before Write operations to new paths.
+
+```javascript
+// CORRECT: Ensure directory exists first
+Bash({ command: "mkdir -p /path/to/new/directory" })
+Write({ file_path: "/path/to/new/directory/file.ts", content: "..." })
+
+// WRONG: Write to non-existent directory will fail silently or error
+Write({ file_path: "/non/existent/path/file.ts", content: "..." })
+```
+
+**Exception**: Skip mkdir if you KNOW the directory exists from prior Read/Glob.
+
+### 3. Pre-Build Type Verification
+
+[!!] After creating/modifying `.tsx` or `.ts` files, verify TypeScript compiles.
+
+**Workflow**:
+```javascript
+// 1. Write the file
+Write({ file_path: "/path/to/Component.tsx", content: "..." })
+
+// 2. Verify types (REQUIRED for .tsx files)
+Bash({
+  command: "bun tsc --noEmit /path/to/Component.tsx",
+  description: "Type-check new component"
+})
+
+// 3. If type errors, fix before marking complete
+```
+
+**TypeScript Type Preferences**:
+
+| Avoid | Prefer | Reason |
+|-------|--------|--------|
+| `JSX.Element` | `React.ReactNode` | More flexible, handles null/undefined |
+| `FC<Props>` | `function Component(props: Props)` | Explicit return types |
+| `any` | `unknown` or specific type | Type safety |
+| `object` | `Record<string, unknown>` | Better type inference |
+
+**Common JSX Return Type Patterns**:
+```typescript
+// PREFERRED: ReactNode for component returns
+function MyComponent(): React.ReactNode {
+  return <div>Content</div>;
+}
+
+// ACCEPTABLE: Explicit JSX.Element when null not possible
+function StrictComponent(): JSX.Element {
+  return <div>Always returns element</div>;
+}
+```
+
+### 4. Completion Verification Protocol
+
+[!!!] Before calling `TaskUpdate({ status: "completed" })`, VERIFY implementation.
+
+**Required Checks**:
+
+1. **File Existence**: Confirm all `files_affected` actually exist
+   ```javascript
+   // Verify each file was created/modified
+   Read({ file_path: "/path/to/created/file.ts" })
+   // If Read fails, file doesn't exist - implementation incomplete
+   ```
+
+2. **Content Verification**: Spot-check key content is present
+   ```javascript
+   // Verify expected code patterns exist
+   Grep({ pattern: "export function MyFeature", path: "/path/to/file.ts" })
+   ```
+
+3. **Type Check**: For TypeScript files, run `bun tsc --noEmit`
+
+4. **Build Check** (if applicable): Run `bun run build` for critical changes
+
+**Completion Checklist** (mental model):
+```
+[ ] All files_affected exist and are readable
+[ ] Key exports/functions present in files
+[ ] TypeScript compiles without errors
+[ ] No obvious syntax errors in written code
+-> THEN TaskUpdate({ status: "completed" })
+```
+
+**If Verification Fails**:
+- DO NOT mark as completed
+- Fix the issue first
+- Document in `findings` if unfixable
+- Set `recommendations` with next steps
+
+---
+
 ## Parallel Implementation
 
 When multiple implementer agents work in parallel:

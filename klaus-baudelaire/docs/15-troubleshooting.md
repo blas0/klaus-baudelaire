@@ -350,6 +350,49 @@ ENABLE_REMINDER_SYSTEM="OFF"      # reminder-nudger-agent
 
 ---
 
+## File Size Limits (v1.0.5)
+
+Claude Code has built-in file size limits that can cause operations to fail silently or partially.
+
+### Known Limits
+
+| Operation | Limit | Symptom |
+|-----------|-------|---------|
+| Read tool | 2000 lines default | Truncated output, use `offset`/`limit` params |
+| Write tool | ~256KB | Silent failure, file not created |
+| Edit tool | ~256KB total file size | Operation fails or partial edit |
+| Bash output | 30000 chars | Output truncated |
+
+### Best Practices
+
+1. **Large File Writes**: Split into chunks or use multiple smaller files
+2. **Read Verification**: After Write, always Read to confirm file exists
+3. **Generated Code**: Monitor size of generated files (especially bundled JS/CSS)
+4. **Long Outputs**: Use `head_limit` in Grep to avoid truncation
+
+### Symptoms of Size Limit Issues
+
+- File creation succeeds but file is empty or missing
+- Edit operation silently fails
+- Partial file content written
+- "Sibling tool call errored" in parallel operations
+
+### Mitigation
+
+```javascript
+// BEFORE writing large file, check estimated size
+const content = generateLargeContent();
+if (content.length > 250000) {
+  // Split into multiple files or warn user
+}
+
+// AFTER write, verify
+Write({ file_path: "/path/to/file.ts", content: "..." })
+Read({ file_path: "/path/to/file.ts" })  // Verify it exists
+```
+
+---
+
 ## References & Sources
 
 ### Claude Code Documentation

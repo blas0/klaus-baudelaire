@@ -11,6 +11,40 @@
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/dev-server-guard.sh \"$HOOK_TOOL_INPUT\"",
+            "async": false
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/file-lock-coordinator.sh acquire \"$HOOK_TOOL_INPUT\"",
+            "async": false
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/file-lock-coordinator.sh release \"$HOOK_TOOL_INPUT\"",
+            "async": true
+          }
+        ]
+      }
     ]
   }
 }
