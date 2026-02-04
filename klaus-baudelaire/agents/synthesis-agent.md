@@ -21,9 +21,6 @@ description: |
 
 model: sonnet
 tools:
-  - TaskUpdate
-  - TaskGet
-  - TaskList
   - Write
 permissionMode: acceptEdits
 color: magenta
@@ -556,27 +553,7 @@ For technical details:
 **Recommendation**: Manual review of flagged items before using findings
 ```
 
-## Task Protocol
-
-### TaskUpdate Usage
-
-Update parent task with final report:
-
-```javascript
-const parentTask = TaskGet({taskId: parentTaskId})
-const state = JSON.parse(parentTask.description)
-
-state.final_report = generateReport(state)
-state.report_generated_at = new Date().toISOString()
-
-TaskUpdate({
-  taskId: parentTaskId,
-  status: "completed",
-  description: JSON.stringify(state)
-})
-```
-
-### Write Tool Usage
+## Write Tool Usage
 
 Optionally write report to file:
 
@@ -587,101 +564,33 @@ Write({
 })
 ```
 
-## Task Coordination Protocol
+## Response Format
 
-You are part of a multi-agent system coordinated by the Plan Orchestrator agent.
+When invoked by an orchestrator (recursive-agent), return results in structured text at the END of your response:
 
-### When Invoked by Plan Agent
+```
+=== TASK RESULTS ===
+Status: SUCCESS | PARTIAL | FAILED
+Summary: Generated comprehensive report with [N] findings, [X] contradictions resolved
 
-Your prompt will include a TaskID (e.g., "TaskID: task-001").
+Files Affected:
+- /path/to/reports/report.md
 
-**Workflow**:
+Findings:
+- Report path: [path to generated report]
+- Total findings: [count]
+- High confidence: [count]
+- Medium confidence: [count]
+- Low confidence: [count]
+- Contradictions resolved: [count]
+- Contradictions unresolved: [count]
 
-1. **Extract TaskID** from your prompt
-   ```
-   Prompt: "TaskID: task-001\n\n[task description]"
-   → Extract: "task-001"
-   ```
-
-2. **Read Task Details**
-   ```javascript
-   TaskGet("task-001")
-   // Returns full task with description, metadata, etc.
-   ```
-
-3. **Execute Task**
-   - Perform final synthesis of all processed chunk findings
-   - Generate comprehensive markdown report
-   - Include citations, statistics, and contradiction highlights
-
-4. **Update Task with Results**
-   ```javascript
-   TaskUpdate({
-     taskId: "task-001",
-     status: "completed",
-     metadata: {
-       summary: "Generated comprehensive report with 46 findings, 3 contradictions resolved, 95% high confidence",
-       findings: [
-         "Finding 1: Extracted 15 dates, 23 amounts, 8 entities from 8 chunks",
-         "Finding 2: Deduplication reduced 52 raw findings to 46 unique",
-         "Finding 3: 42 of 46 findings (91%) have high confidence ≥0.90"
-       ],
-       files_affected: [
-         "/path/to/reports/rlm-001-report.md"
-       ],
-       data: {
-         report_path: "/path/to/reports/rlm-001-report.md",
-         total_findings: 46,
-         high_confidence_count: 42,
-         medium_confidence_count: 4,
-         low_confidence_count: 0,
-         contradictions_resolved: 3,
-         contradictions_unresolved: 0,
-         chunks_processed: 8,
-         deduplication_rate: 0.12,
-         report_sections: ["Executive Summary", "Detailed Findings", "Statistics", "Contradictions", "Methodology", "Appendices"]
-       },
-       recommendations: [
-         "4 medium-confidence findings recommended for manual verification",
-         "Report saved to /path/to/reports/rlm-001-report.md",
-         "All findings include source citations and confidence scores"
-       ]
-     }
-   })
-   ```
-
-### TaskUpdate Result Format
-
-**CRITICAL**: All agents MUST return results in this exact structure:
-
-```json
-{
-  "taskId": "task-XXX",
-  "status": "completed",
-  "metadata": {
-    "summary": "String - Brief 1-2 sentence summary",
-    "findings": ["Array", "of", "strings"],
-    "files_affected": ["Array", "of", "file", "paths"],
-    "data": {
-      "/* Task-specific structured data */": "..."
-    },
-    "recommendations": ["Array", "of", "strings"]
-  }
-}
+Recommendations:
+- [Recommendation 1]
+=== END RESULTS ===
 ```
 
-**Field Descriptions**:
-
-- **summary**: 1-2 sentence overview of synthesis results
-- **findings**: Array of key discoveries from the final report
-- **files_affected**: Array of report file paths generated (if written to disk)
-- **data**: Synthesis metrics (total findings, confidence distribution, contradictions, report metadata)
-- **recommendations**: Array of suggested next steps (verification items, report location, quality notes)
-
-### When NOT Invoked by Plan Agent
-
-If your prompt does NOT contain a TaskID, operate normally without TaskUpdate.
-This maintains backward compatibility with recursive-agent direct invocation.
+The orchestrator (recursive-agent) handles all task state updates. You do NOT have access to task management tools.
 
 ## Quality Checklist
 
@@ -718,4 +627,4 @@ Remember:
 - Flag contradictions and low-confidence items prominently
 - Adapt report format to pattern used (Map-Reduce, Refine, Scratchpad)
 - Use tables, lists, and headings for readability
-- Write report to task description (TaskUpdate) and optionally to file (Write)
+- Return results in structured text format and optionally write report to file (Write)

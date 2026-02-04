@@ -33,7 +33,7 @@ Plans and orchestrates complex work without writing code. Decomposes tasks, sele
 |----------|-------|
 | **Model** | Sonnet |
 | **Purpose** | PRIMARY documentation gatherer |
-| **Tools** | Context7 (resolve-library-id, query-docs), WebSearch, WebFetch, Read, Write, TaskUpdate, TaskList |
+| **Tools** | Context7 (resolve-library-id, query-docs), WebSearch, WebFetch, Read, Write |
 | **When Used** | All tiers (documentation needs) |
 | **Feature Flag** | ENABLE_DOCS_SPECIALIST |
 
@@ -45,7 +45,7 @@ The first agent consulted for documentation. Uses official sources (developer.ap
 |----------|-------|
 | **Model** | Sonnet |
 | **Purpose** | Validates gathered context before implementation |
-| **Tools** | Read, Grep, Glob, WebSearch, Context7 (resolve-library-id, query-docs), TaskUpdate, TaskGet, TaskList |
+| **Tools** | Read, Grep, Glob, WebSearch, Context7 (resolve-library-id, query-docs) |
 | **When Used** | MEDIUM and FULL tier (after discovery, before implementation) |
 | **Feature Flag** | ENABLE_CONTEXT_VALIDATOR |
 
@@ -57,7 +57,7 @@ Sits between discovery and implementation phases. Catches version conflicts, bre
 |----------|-------|
 | **Model** | Sonnet |
 | **Purpose** | Web research for docs and best practices |
-| **Tools** | WebSearch, WebFetch, Read, Write, TaskUpdate, TaskList |
+| **Tools** | WebSearch, WebFetch, Read, Write |
 | **When Used** | LIGHT (if enabled), FULL tier |
 | **Feature Flag** | ENABLE_WEB_RESEARCHER (OFF by default) |
 
@@ -69,7 +69,7 @@ Deep web research when docs-specialist needs support. Searches for best practice
 |----------|-------|
 | **Model** | Haiku |
 | **Purpose** | Extract file paths from bash output |
-| **Tools** | Read, Grep, Glob, TaskUpdate, TaskList |
+| **Tools** | Read, Grep, Glob |
 | **When Used** | MEDIUM and FULL tier |
 | **Feature Flag** | ENABLE_FILE_PATH_EXTRACTOR (ON by default) |
 
@@ -81,7 +81,7 @@ Parses bash command output to extract file paths for context tracking. Helps mai
 |----------|-------|
 | **Model** | Sonnet |
 | **Purpose** | Test infrastructure setup |
-| **Tools** | Write, Edit, Bash, Read, TaskUpdate, TaskList |
+| **Tools** | Write, Edit, Bash, Read, Glob, Grep, Context7 (resolve-library-id, query-docs) |
 | **When Used** | When test setup is requested |
 | **Feature Flag** | ENABLE_TEST_INFRASTRUCTURE (OFF by default) |
 
@@ -105,7 +105,7 @@ READ-ONLY monitor that detects stagnation. Identifies stuck tasks, blocked depen
 |----------|-------|
 | **Model** | Sonnet |
 | **Purpose** | Code implementation after context collection |
-| **Tools** | Read, Grep, Glob, Edit, Write, Bash, Context7 (resolve-library-id, query-docs), TaskUpdate, TaskGet, TaskList |
+| **Tools** | Read, Grep, Glob, Edit, Write, Bash, Context7 (resolve-library-id, query-docs) |
 | **When Used** | MEDIUM and FULL tier (after discovery phase) |
 | **Feature Flag** | ENABLE_IMPLEMENTER (ON by default) |
 
@@ -130,7 +130,7 @@ These agents derive from Claude Code's native agent architecture.
 |----------|-------|
 | **Model** | Sonnet |
 | **Purpose** | Comprehensive codebase exploration for all tiers |
-| **Tools** | Glob, Grep, Read, Context7 (resolve-library-id), TaskUpdate, TaskGet, TaskList, Edit, Write, Bash |
+| **Tools** | Glob, Grep, Read, Context7 (resolve-library-id), Edit, Write, Bash |
 | **When Used** | LIGHT, MEDIUM, FULL tier |
 
 Deep architectural analysis for all tasks. Maps system architecture, identifies patterns, tracks cross-file dependencies, and provides comprehensive codebase understanding. Now used across all tiers (replaced explore-light) for consistent quality exploration.
@@ -156,7 +156,7 @@ The only agent with TaskCreate capability (besides plan-orchestrator). Coordinat
 |----------|-------|
 | **Model** | Haiku |
 | **Purpose** | Refactoring suggestions for clarity |
-| **Tools** | Read, Write, Edit, TaskUpdate, TaskList |
+| **Tools** | Read, Write, Edit, Grep, Glob, Context7 (resolve-library-id, query-docs) |
 | **Feature Flag** | ENABLE_CODE_SIMPLIFIER (OFF by default) |
 
 Analyzes code for complexity and suggests simplifications. Focuses on readability, maintainability, and adherence to project patterns.
@@ -178,7 +178,7 @@ Used by the `/compost` command. Reads source files, identifies recurring pattern
 |----------|-------|
 | **Model** | Haiku |
 | **Purpose** | Advanced git operations |
-| **Tools** | Bash, Read, Write, TaskUpdate, TaskList |
+| **Tools** | Bash, Read, Grep |
 | **Feature Flag** | ENABLE_GIT_ORCHESTRATOR (OFF by default) |
 
 Handles complex git operations: interactive rebase, conflict resolution, history manipulation. Uses a dual-pathway OODA loop with safety-first principles (backup refs, pre-flight checks, rollback strategies).
@@ -230,7 +230,7 @@ Worker agent that analyzes individual document chunks. Extracts structured data,
 |----------|-------|
 | **Model** | Sonnet |
 | **Purpose** | Deduplication and conflict resolution |
-| **Tools** | TaskGet, TaskList |
+| **Tools** | - (no tools, receives input from orchestrator) |
 
 Merges findings from parallel chunk analyses. Deduplicates, resolves naming conflicts, and assigns confidence scores.
 
@@ -240,7 +240,7 @@ Merges findings from parallel chunk analyses. Deduplicates, resolves naming conf
 |----------|-------|
 | **Model** | Sonnet |
 | **Purpose** | Final report generation |
-| **Tools** | TaskGet, TaskList |
+| **Tools** | Write |
 
 Generates comprehensive final reports from complete analysis state. Includes executive summary, detailed findings, statistics, and methodology notes.
 
@@ -264,13 +264,15 @@ For MEDIUM/FULL tier tasks, the Plan agent automatically selects and delegates t
 
 ---
 
-## Task Tool Distribution
+## Task Tool Distribution (Centralized Ownership - v1.0.6)
 
 | Role | Agents | Tools |
 |------|--------|-------|
-| **Task Creators** | research-lead, plan-orchestrator | TaskCreate, TaskUpdate, TaskList |
-| **Task Executors** | explore-lead, docs-specialist, context-validator, web-research-specialist, file-path-extractor, code-simplifier, test-infrastructure-agent, git-orchestrator, composter | TaskUpdate, TaskList |
+| **Task Orchestrators** | plan-orchestrator, recursive-agent, research-lead | TaskCreate, TaskUpdate, TaskGet, TaskList |
+| **Task Workers** | explore-lead, docs-specialist, context-validator, web-research-specialist, file-path-extractor, code-simplifier, test-infrastructure-agent, git-orchestrator, composter, implementer, chunk-analyzer, synthesis-agent, conflict-resolver | Return results via `=== TASK RESULTS ===` format |
 | **Task Monitor** | reminder-nudger-agent | TaskGet, TaskList (READ-ONLY) |
+
+**Architectural Decision**: Task state ownership is centralized to orchestrators only. Workers return results in structured text; orchestrators parse responses and handle all TaskUpdate calls. This eliminates coordination gaps where workers completed work but failed to update task status.
 
 ---
 

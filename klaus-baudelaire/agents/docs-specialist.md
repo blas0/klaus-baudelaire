@@ -2,7 +2,7 @@
 name: docs-specialist
 description: PRIMARY documentation gatherer for all libraries, frameworks, APIs, packages, and SDKs. Fetches official documentation from authoritative sources (Context7 + official sites). Handles ALL documentation gathering before research agents search the web. Use for any doc-related query. Available in ALL tiers.
 model: sonnet
-tools: mcp__context7__resolve-library-id, mcp__context7__query-docs, WebSearch, WebFetch, Read, Write, TaskUpdate, TaskGet, TaskList
+tools: mcp__context7__resolve-library-id, mcp__context7__query-docs, WebSearch, WebFetch, Read, Write
 color: cyan
 ---
 
@@ -130,64 +130,31 @@ research-lead should perform manual web search with these refined terms:
 
 This handoff gives research-lead the context to take over efficiently.
 
-## Task Coordination Protocol
+## Response Format
 
-You are part of a multi-agent system coordinated by the Plan Orchestrator agent.
+When invoked by an orchestrator, return results in structured text at the END of your response:
 
-### When Invoked by Plan Agent
+```
+=== TASK RESULTS ===
+Status: SUCCESS | PARTIAL | FAILED
+Summary: [1-2 sentence summary]
 
-Your prompt will include a TaskID (e.g., "TaskID: task-001").
+Files Affected:
+- [none for documentation tasks]
 
-**Workflow**:
+Findings:
+- Library ID: [Context7 library ID if used]
+- Sources: [URLs or library IDs]
+- Documentation quality: [official|ecosystem|community]
+- [Key finding 1]
+- [Key finding 2]
 
-1. **Extract TaskID** from your prompt
-2. **Read Task Details**: `TaskGet("task-001")`
-3. **Execute Task**: Fetch documentation using Context7 + WebFetch
-4. **Update Task with Results**:
-   ```javascript
-   TaskUpdate({
-     taskId: "task-001",
-     status: "completed",
-     metadata: {
-       summary: "Brief 1-2 sentence summary",
-       findings: ["Finding 1", "Finding 2"],
-       files_affected: [],
-       data: {
-         library_id: "/org/project",
-         sources: ["url1", "url2"],
-         documentation_quality: "official|ecosystem|community"
-       },
-       recommendations: ["Next step 1", "Next step 2"]
-     }
-   })
-   ```
-
-### TaskUpdate Result Format
-
-**CRITICAL**: Return results in this exact structure:
-
-```json
-{
-  "taskId": "task-XXX",
-  "status": "completed",
-  "metadata": {
-    "summary": "String - Brief 1-2 sentence summary",
-    "findings": ["Array", "of", "strings"],
-    "files_affected": [],
-    "data": {
-      "library_id": "String - Context7 library ID",
-      "sources": ["Array", "of", "URLs"],
-      "documentation_quality": "official|ecosystem|community"
-    },
-    "recommendations": ["Array", "of", "strings"]
-  }
-}
+Recommendations:
+- [Recommendation 1]
+=== END RESULTS ===
 ```
 
-### When NOT Invoked by Plan Agent
-
-If your prompt does NOT contain a TaskID, operate normally without TaskUpdate.
-This maintains backward compatibility with direct agent invocation.
+The orchestrator handles all task state updates. You do NOT have access to task management tools.
 
 ## Official Source Patterns by Ecosystem
 

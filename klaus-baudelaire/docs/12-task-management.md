@@ -51,42 +51,62 @@ Claude Code 2.1.16 introduced a native task management system designed for compl
 
 ---
 
-## Task Tool Distribution
+## Task Tool Distribution (Centralized Ownership - v1.0.6)
 
-Klaus distributes Task tools across 11 agents based on their roles:
+Klaus centralizes Task tools to 3 orchestrator agents only:
 
 | Role | Agents | Tools | Purpose |
 |------|--------|-------|---------|
-| **Task Creators** | research-lead, plan-orchestrator | TaskCreate, TaskUpdate, TaskList | Creates task breakdowns for complex work |
-| **Task Executors** | explore-light, research-light, web-research-specialist, docs-specialist, file-path-extractor, git-orchestrator, code-simplifier, test-infrastructure-agent, composter | TaskUpdate, TaskList | Updates task progress, marks completion |
+| **Task Orchestrators** | plan-orchestrator, recursive-agent, research-lead | TaskCreate, TaskUpdate, TaskGet, TaskList | Create tasks, own task state, update on worker completion |
+| **Task Workers** | All other agents (13 total) | None | Return results via `=== TASK RESULTS ===` response format |
 | **Task Monitor** | reminder-nudger-agent | TaskGet, TaskList | READ-ONLY monitoring for stagnation detection |
 
-**Why this distribution**:
-- **research-lead / plan-orchestrator**: Only agents that decompose complex work into sub-tasks (need TaskCreate)
-- **Executor agents**: Update task status as they complete their specialized work
-- **reminder-nudger**: Monitors without modifying to detect bottlenecks
+**Why centralized ownership**:
+- **Root cause**: Distributed ownership caused coordination gaps - workers completed work but failed to call TaskUpdate
+- **Solution**: Orchestrators own all task state; workers just return results in structured text
+- **Benefit**: Eliminates orphaned pending tasks by design
+- **Pattern**: Orchestrator creates task -> spawns worker -> parses worker response -> calls TaskUpdate
 
 ---
 
-## Task Coordination Protocol
+## Task Coordination Protocol (Centralized Model)
 
-Every agent with Task tools includes a standardized protocol section.
+### Orchestrator Protocol (plan-orchestrator, recursive-agent, research-lead)
 
-### Before Starting Work
+**Before Spawning Worker:**
+1. Call `TaskCreate` with subject, description, activeForm
+2. Call `TaskUpdate` to set task to `in_progress`
+3. Spawn worker via `Task` tool
 
-1. Call `TaskList` to see existing tasks
-2. Check if work relates to any pending tasks
-3. If yes: `TaskUpdate` that task to `in_progress`
+**After Worker Returns:**
+1. Parse worker's `=== TASK RESULTS ===` response
+2. Extract Status, Summary, Files Affected, Findings
+3. Call `TaskUpdate` to mark task `completed` with metadata
 
-### During Work
+### Worker Protocol (All Other Agents)
 
-- Update task status as progress is made
-- Add relevant context to task descriptions
+Workers do NOT call Task* tools. Instead:
 
-### After Completing Work
+1. Perform assigned work
+2. Return results in structured format:
 
-- Mark tasks as `completed` with `TaskUpdate`
-- Verify no orphaned `in_progress` tasks remain
+```
+=== TASK RESULTS ===
+Status: SUCCESS | PARTIAL | FAILED
+Summary: [1-2 sentence summary]
+
+Files Affected:
+- path/to/file.ts
+
+Findings:
+- [Finding 1]
+
+Recommendations:
+- [Recommendation 1]
+=== END RESULTS ===
+```
+
+3. Orchestrator handles all TaskUpdate calls
 
 ---
 
@@ -98,29 +118,41 @@ pending --> in_progress --> completed
 
 ---
 
-## Coordination Flow Example
+## Coordination Flow Example (Centralized Model)
 
 ```
-1. research-lead creates task breakdown:
+1. plan-orchestrator creates and owns task:
    TaskCreate:
      Subject: "Research React testing libraries for TypeScript"
      Description: "Compare Jest, Vitest, and bun:test for TS projects."
      ActiveForm: "Researching React testing libraries"
-
-2. web-research-specialist picks up task:
-   TaskList --> Find task #1 (pending)
    TaskUpdate: task #1 --> in_progress
-   [performs research...]
-   TaskUpdate: task #1 --> completed
 
-3. reminder-nudger monitors progress:
-   TaskList --> Detect task #1 in_progress >2 min
-   TaskGet: task #1 --> Inspect details
+2. plan-orchestrator spawns worker:
+   Task(subagent_type: "web-research-specialist", prompt: "...")
+   [worker performs research...]
+
+3. web-research-specialist returns results (NOT TaskUpdate):
+   === TASK RESULTS ===
+   Status: SUCCESS
+   Summary: Compared 3 testing libraries. bun:test recommended for TS.
+   Files Affected: None (research only)
+   Findings:
+   - bun:test fastest with native TS support
+   - Vitest best Jest compatibility
+   - Jest most mature ecosystem
+   Recommendations:
+   - Use bun:test for new projects
+   === END RESULTS ===
+
+4. plan-orchestrator updates task state:
+   [parses worker response]
+   TaskUpdate: task #1 --> completed (with metadata from response)
+
+5. reminder-nudger monitors progress:
+   TaskList --> Detect task #2 in_progress >2 min
+   TaskGet: task #2 --> Inspect details
    [inject steering if stagnated]
-
-4. docs-specialist continues chain:
-   TaskList --> See task #1 completed
-   TaskUpdate: task #2 (blocked by #1) --> in_progress
 ```
 
 ---

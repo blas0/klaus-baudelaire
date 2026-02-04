@@ -7,6 +7,80 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.6] - 2026-02-04
+
+### Changed
+- **Centralized Task Ownership Architecture** - Root cause fix for orphaned pending tasks
+  - Task state management now centralized to 3 orchestrator agents only
+  - Workers return results via structured `=== TASK RESULTS ===` response format
+  - Orchestrators parse responses and handle all TaskUpdate calls
+
+### Architecture
+
+**Orchestrators (KEEP Task* tools):**
+| Agent | Tools |
+|-------|-------|
+| plan-orchestrator | TaskCreate, TaskUpdate, TaskGet, TaskList |
+| recursive-agent | TaskCreate, TaskUpdate, TaskGet, TaskList |
+| research-lead | TaskCreate, TaskUpdate, TaskList |
+
+**Workers (REMOVED Task* tools):**
+| Agent | Removed Tools |
+|-------|---------------|
+| implementer | TaskUpdate, TaskGet, TaskList |
+| explore-lead | TaskUpdate, TaskGet, TaskList |
+| docs-specialist | TaskUpdate, TaskGet, TaskList |
+| web-research-specialist | TaskUpdate, TaskGet, TaskList |
+| context-validator | TaskUpdate, TaskGet, TaskList |
+| code-simplifier | TaskUpdate, TaskGet, TaskList |
+| test-infrastructure-agent | TaskUpdate, TaskGet, TaskList |
+| file-path-extractor | TaskUpdate, TaskGet, TaskList |
+| git-orchestrator | TaskUpdate, TaskGet, TaskList |
+| composter | TaskUpdate, TaskList |
+| chunk-analyzer | TaskUpdate |
+| synthesis-agent | TaskUpdate, TaskGet, TaskList |
+| conflict-resolver | TaskUpdate, TaskGet, TaskList |
+
+**Monitor (READ-ONLY - unchanged):**
+| Agent | Tools |
+|-------|-------|
+| reminder-nudger-agent | TaskList, TaskGet |
+
+### Worker Response Format
+
+Workers now return results in structured text:
+```
+=== TASK RESULTS ===
+Status: SUCCESS | PARTIAL | FAILED
+Summary: [1-2 sentence summary]
+
+Files Affected:
+- path/to/file1.ts
+
+Findings:
+- [Finding 1]
+
+Recommendations:
+- [Recommendation 1]
+=== END RESULTS ===
+```
+
+### Fixed
+- Root cause: 12 tasks (#13-24) remained pending despite work completion
+- Issue: Distributed task ownership created coordination gaps
+- Solution: Orchestrators own all task state; workers just return results
+
+### Documentation
+- Updated `docs/11-agent-team.md` with new task tool distribution
+- Updated `docs/12-task-management.md` with centralized ownership model
+
+### Notes
+- Net task state owners: 16 -> 3 (orchestrators only)
+- Coordination gap risk eliminated by design
+- Workers no longer need to remember TaskUpdate calls
+
+---
+
 ## [1.0.5] - 2026-02-03
 
 ### Added
@@ -143,6 +217,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+[1.0.6]: https://github.com/blas0/klaus-baudelaire/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/blas0/klaus-baudelaire/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/blas0/klaus-baudelaire/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/blas0/klaus-baudelaire/compare/v1.0.2...v1.0.3

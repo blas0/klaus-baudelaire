@@ -21,7 +21,6 @@ model: haiku
 tools:
   - Read
   - Grep
-  - TaskUpdate
 permissionMode: plan
 color: cyan
 ---
@@ -212,7 +211,7 @@ If reference is unclear (e.g., "the aforementioned party"):
 - Process chunk independently (no state dependency)
 - Optimize for speed (haiku model)
 - Return complete findings immediately
-- No TaskUpdate calls (orchestrator handles state)
+- Orchestrator handles all task state updates
 
 **Example task:**
 ```
@@ -326,7 +325,7 @@ Typical: 0-2 (Read if referencing files, Grep for patterns)
 Avoid:
 - Multiple file reads (chunk text already provided)
 - Excessive grep searches (use semantic understanding)
-- TaskUpdate calls (orchestrator handles state)
+- Direct task state management (orchestrator handles this)
 ```
 
 ### Memory Efficiency
@@ -378,126 +377,31 @@ If cannot parse current state JSON:
   - Continue analysis (don't abort)
 ```
 
-## Task Protocol
+## Response Format
 
-### No TaskCreate Access
+When invoked by an orchestrator (recursive-agent), return results in structured text at the END of your response:
 
-[!] **Workers do NOT create tasks**
-- Only orchestrator (recursive-agent) creates parent task
-- Workers receive tasks via Task tool invocation
-- Workers return findings in response
-
-### No TaskList Access
-
-[!] **Workers do NOT list tasks**
-- No visibility into other workers
-- Process assigned chunk independently
-- Trust orchestrator for workflow coordination
-
-### TaskUpdate (Limited Use)
-
-[?] **When to use TaskUpdate:**
-- If worker discovers critical issue requiring immediate attention
-- If chunk reveals workflow should change pattern
-- Otherwise: return findings in response, let orchestrator update state
-
-**Example emergency update:**
 ```
-If chunk reveals document is in wrong language:
-  TaskUpdate({
-    taskId: parentTaskId,  // Provided in prompt
-    metadata: {
-      "emergency_stop": true,
-      "reason": "Document language mismatch"
-    }
-  })
+=== TASK RESULTS ===
+Status: SUCCESS | PARTIAL | FAILED
+Summary: Analyzed chunk ID [X], extracted [N] findings
+
+Files Affected:
+- [none for chunk analysis]
+
+Findings:
+- Chunk ID: [chunk identifier]
+- Pattern type: [map-reduce|refine|scratchpad]
+- Findings count: [number]
+- Processing time: [ms]
+- Extracted data: [list of findings with confidence scores]
+
+Recommendations:
+- [Recommendation 1]
+=== END RESULTS ===
 ```
 
-## Task Coordination Protocol
-
-You are part of a multi-agent system coordinated by the Plan Orchestrator agent.
-
-### When Invoked by Plan Agent
-
-Your prompt will include a TaskID (e.g., "TaskID: task-001").
-
-**Workflow**:
-
-1. **Extract TaskID** from your prompt
-   ```
-   Prompt: "TaskID: task-001\n\n[task description]"
-   → Extract: "task-001"
-   ```
-
-2. **Read Task Details**
-   ```javascript
-   TaskGet("task-001")
-   // Returns full task with description, metadata, etc.
-   ```
-
-3. **Execute Task**
-   - Perform chunk analysis as described in the task
-   - Use your specialized tools (Read, Grep)
-   - Extract findings from document chunk
-
-4. **Update Task with Results**
-   ```javascript
-   TaskUpdate({
-     taskId: "task-001",
-     status: "completed",
-     metadata: {
-       summary: "Analyzed chunk ID 5, extracted 3 dates, 5 dollar amounts, 2 entities",
-       findings: [
-         "Finding 1: Contract effective date 2026-01-15 (confidence: 0.95)",
-         "Finding 2: Monthly payment $10,000 (confidence: 0.98)"
-       ],
-       files_affected: [],  // Chunk analysis doesn't modify files
-       data: {
-         chunk_id: 5,
-         pattern_type: "map-reduce",
-         findings_count: 10,
-         processing_time_ms: 1200
-       },
-       recommendations: [
-         "Send findings to conflict-resolver if contradictions detected",
-         "Queue investigation items for scratchpad pattern"
-       ]
-     }
-   })
-   ```
-
-### TaskUpdate Result Format
-
-**CRITICAL**: All agents MUST return results in this exact structure:
-
-```json
-{
-  "taskId": "task-XXX",
-  "status": "completed",
-  "metadata": {
-    "summary": "String - Brief 1-2 sentence summary",
-    "findings": ["Array", "of", "strings"],
-    "files_affected": ["Array", "of", "file", "paths"],
-    "data": {
-      "/* Task-specific structured data */": "..."
-    },
-    "recommendations": ["Array", "of", "strings"]
-  }
-}
-```
-
-**Field Descriptions**:
-
-- **summary**: 1-2 sentence overview of chunk analysis results
-- **findings**: Array of extracted data points from chunk with confidence scores
-- **files_affected**: Empty array for chunk analysis (no file modifications)
-- **data**: Chunk-specific structured data (chunk_id, pattern, findings_count, etc.)
-- **recommendations**: Array of suggested next steps (conflict resolution, investigation queue, etc.)
-
-### When NOT Invoked by Plan Agent
-
-If your prompt does NOT contain a TaskID, operate normally without TaskUpdate.
-This maintains backward compatibility with recursive-agent direct invocation.
+The orchestrator (recursive-agent) handles all task state updates. You do NOT have access to task management tools.
 
 ## Quality Assurance
 
@@ -723,4 +627,4 @@ Remember:
 - Include location references for verification
 - Flag ambiguities, don't guess
 - Optimize for speed (haiku model)
-- No TaskCreate, minimal TaskUpdate
+- Return results in structured format (orchestrator handles task state)

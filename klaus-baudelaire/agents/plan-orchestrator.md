@@ -256,27 +256,27 @@ Build agent capability registry:
 ```javascript
 {
   "explore-light": {
-    "tools": ["Read", "Grep", "Glob", "Edit", "Write", "Context7", "TaskUpdate", "TaskGet", "TaskList"],
+    "tools": ["Read", "Grep", "Glob", "Edit", "Write", "Context7"],
     "model": "haiku",
     "best_for": ["code exploration", "file search", "quick edits"]
   },
   "research-light": {
-    "tools": ["WebSearch", "Context7", "TaskUpdate", "TaskGet", "TaskList"],
+    "tools": ["WebSearch", "Context7"],
     "model": "haiku",
     "best_for": ["web research", "documentation lookup"]
   },
   "docs-specialist": {
-    "tools": ["Context7", "WebSearch", "WebFetch", "Read", "Write", "TaskUpdate", "TaskGet", "TaskList"],
+    "tools": ["Context7", "WebSearch", "WebFetch", "Read", "Write"],
     "model": "haiku",
     "best_for": ["library docs", "API reference", "framework guides"]
   },
   "test-infrastructure-agent": {
-    "tools": ["Write", "Edit", "Bash", "Read", "Grep", "Glob", "Context7", "TaskUpdate", "TaskGet", "TaskList"],
+    "tools": ["Write", "Edit", "Bash", "Read", "Grep", "Glob", "Context7"],
     "model": "sonnet",
     "best_for": ["test setup", "test infrastructure"]
   },
   "git-orchestrator": {
-    "tools": ["Bash", "Read", "Grep", "TaskUpdate", "TaskGet", "TaskList"],
+    "tools": ["Bash", "Read", "Grep"],
     "model": "haiku",
     "best_for": ["git operations", "history manipulation"]
   }
@@ -635,7 +635,7 @@ Here are the available agents in klaus-baudelaire system and their capabilities:
 
 ### 1. explore-light
 - **Model**: haiku (fast)
-- **Tools**: Read, Grep, Glob, Context7 (resolve-library-id), TaskUpdate, TaskGet, TaskList
+- **Tools**: Read, Grep, Glob, Context7 (resolve-library-id)
 - **Best For**:
   - Quick codebase exploration (DISCOVERY ONLY)
   - File searching by pattern
@@ -646,7 +646,7 @@ Here are the available agents in klaus-baudelaire system and their capabilities:
 
 ### 1.5. implementer
 - **Model**: sonnet (quality)
-- **Tools**: Read, Grep, Glob, Edit, Write, Bash, Context7 (resolve-library-id, query-docs), TaskUpdate, TaskGet, TaskList
+- **Tools**: Read, Grep, Glob, Edit, Write, Bash, Context7 (resolve-library-id, query-docs)
 - **Best For**:
   - Code implementation based on gathered context
   - File editing and creation
@@ -657,7 +657,7 @@ Here are the available agents in klaus-baudelaire system and their capabilities:
 
 ### 2. research-light
 - **Model**: haiku (fast)
-- **Tools**: WebSearch, Context7, TaskUpdate, TaskGet, TaskList
+- **Tools**: WebSearch, Context7
 - **Best For**:
   - Quick web searches
   - Library/framework identification
@@ -666,7 +666,7 @@ Here are the available agents in klaus-baudelaire system and their capabilities:
 
 ### 3. docs-specialist
 - **Model**: haiku (fast)
-- **Tools**: Context7 (resolve-library-id, query-docs), WebSearch, WebFetch, Read, Write, TaskUpdate, TaskGet, TaskList
+- **Tools**: Context7 (resolve-library-id, query-docs), WebSearch, WebFetch, Read, Write
 - **Best For**:
   - Library/framework documentation
   - API reference lookups
@@ -684,7 +684,7 @@ Here are the available agents in klaus-baudelaire system and their capabilities:
 
 ### 5. file-path-extractor
 - **Model**: haiku (fast)
-- **Tools**: Read, Grep, Glob, Bash, TaskUpdate, TaskGet, TaskList
+- **Tools**: Read, Grep, Glob, Bash
 - **Best For**:
   - Extracting file paths from command output
   - Processing bash command results
@@ -692,7 +692,7 @@ Here are the available agents in klaus-baudelaire system and their capabilities:
 
 ### 6. code-simplifier
 - **Model**: haiku (fast)
-- **Tools**: Read, Edit, Write, Grep, Glob, Context7, TaskUpdate, TaskGet, TaskList
+- **Tools**: Read, Edit, Write, Grep, Glob, Context7
 - **Best For**:
   - Code refactoring for clarity
   - Simplifying complex logic
@@ -701,7 +701,7 @@ Here are the available agents in klaus-baudelaire system and their capabilities:
 
 ### 7. test-infrastructure-agent
 - **Model**: sonnet (medium)
-- **Tools**: Write, Edit, Bash, Read, Grep, Glob, Context7, TaskUpdate, TaskGet, TaskList
+- **Tools**: Write, Edit, Bash, Read, Grep, Glob, Context7
 - **Best For**:
   - Setting up test frameworks
   - Writing test files
@@ -710,7 +710,7 @@ Here are the available agents in klaus-baudelaire system and their capabilities:
 
 ### 8. git-orchestrator
 - **Model**: haiku (fast)
-- **Tools**: Bash, Read, Grep, TaskUpdate, TaskGet, TaskList
+- **Tools**: Bash, Read, Grep
 - **Best For**:
   - Complex git operations
   - Interactive rebase
@@ -753,16 +753,27 @@ Task 2: (blocked by Task 1)  // INVALID
 - **Parallel**: Independent tasks (exploration + research)
 - **Sequential**: Dependent tasks (design after exploration)
 
-### 4. Metadata Format
-```javascript
-// Agents MUST return this structure in TaskUpdate
-{
-  summary: "Brief 1-2 sentence summary",
-  findings: ["Finding 1", "Finding 2", ...],
-  files_affected: ["file1.js", "file2.js", ...],
-  data: { /* task-specific structured data */ },
-  recommendations: ["Rec 1", "Rec 2", ...]
-}
+### 4. Worker Response Format
+```
+// Workers return results in structured text (NOT TaskUpdate)
+// Orchestrator parses response and handles TaskUpdate
+
+=== TASK RESULTS ===
+Status: SUCCESS | PARTIAL | FAILED
+Summary: Brief 1-2 sentence summary
+
+Files Affected:
+- file1.js
+- file2.js
+
+Findings:
+- Finding 1
+- Finding 2
+
+Recommendations:
+- Rec 1
+- Rec 2
+=== END RESULTS ===
 ```
 
 ---
@@ -851,13 +862,14 @@ Task({ subagent_type: "test-infrastructure-agent", blocking: true })
 
 ## FAILURE MODES & RECOVERY
 
-### 1. Agent Returns No Metadata
-**Problem**: Agent completes but doesn't call TaskUpdate with results
+### 1. Agent Returns No Results
+**Problem**: Agent completes but doesn't include structured results in response
 
 **Recovery**:
-- Check TaskList - if status is still "in_progress" after long time, agent may have failed
-- Warn user: "Agent X did not return results, may need manual check"
-- Suggest fallback: "Would you like me to retry with a different agent?"
+- Parse agent response for `=== TASK RESULTS ===` block
+- If missing, extract key information from unstructured response
+- Call TaskUpdate yourself with parsed results
+- Warn user: "Agent X did not return structured results, extracting manually"
 
 ### 2. Agent Errors During Execution
 **Problem**: Agent hits error and stops
@@ -1015,24 +1027,41 @@ TaskGet("task-001")
 - Attribute discoveries to specific agents
 - Provide synthesized summary to user
 
-### Expected TaskUpdate Format from Worker Agents
+### Expected Response Format from Worker Agents
 
-ALL worker agents MUST return results in this structure:
+ALL worker agents return results in structured text (NOT TaskUpdate calls):
 
-```json
-{
-  "taskId": "task-XXX",
-  "status": "completed",
-  "metadata": {
-    "summary": "1-2 sentence summary",
-    "findings": ["Array of discoveries"],
-    "files_affected": ["Array of file paths"],
-    "data": {
-      "/* Agent-specific structured data */": "..."
-    },
-    "recommendations": ["Array of next steps"]
+```
+=== TASK RESULTS ===
+Status: SUCCESS | PARTIAL | FAILED
+Summary: 1-2 sentence summary
+
+Files Affected:
+- /path/to/file1.ts
+- /path/to/file2.ts
+
+Findings:
+- Array of discoveries
+- Key observation
+
+Recommendations:
+- Array of next steps
+=== END RESULTS ===
+```
+
+**Orchestrator Responsibility**: Parse this response and call TaskUpdate yourself:
+```javascript
+// After receiving worker response with structured results
+TaskUpdate({
+  taskId: "task-XXX",
+  status: "completed",
+  metadata: {
+    summary: parsedSummary,
+    findings: parsedFindings,
+    files_affected: parsedFiles,
+    recommendations: parsedRecommendations
   }
-}
+})
 ```
 
 ### Your Synthesis Responsibilities

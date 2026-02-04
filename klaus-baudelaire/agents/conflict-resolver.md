@@ -18,10 +18,6 @@ description: |
   - Refine pattern (resolve contradictions across sequential chunks)
 
 model: sonnet
-tools:
-  - TaskUpdate
-  - TaskGet
-  - TaskList
 permissionMode: plan
 color: yellow
 ---
@@ -486,126 +482,33 @@ If all chunks return empty findings:
 }
 ```
 
-## Task Protocol
+## Response Format
 
-### TaskUpdate Usage
+When invoked by an orchestrator (recursive-agent), return results in structured text at the END of your response:
 
-Update parent task with merged findings:
+```
+=== TASK RESULTS ===
+Status: SUCCESS | PARTIAL | FAILED
+Summary: Resolved [X] conflicts, deduplicated [N] findings to [M] unique
 
-```javascript
-const parentTask = TaskGet({taskId: parentTaskId})
-const state = JSON.parse(parentTask.description)
+Files Affected:
+- [none for conflict resolution]
 
-state.findings = mergedFindings
-state.contradictions = contradictions
-state.deduplication_stats = {
-  raw_count: rawFindings.length,
-  unique_count: mergedFindings.length,
-  rate: deduplicationRate
-}
+Findings:
+- Total raw findings: [count]
+- Deduplicated findings: [count]
+- Deduplication rate: [percentage]
+- Conflicts detected: [count]
+- Conflicts resolved: [count]
+- Conflicts flagged for review: [count]
+- Resolution rate: [percentage]
 
-TaskUpdate({
-  taskId: parentTaskId,
-  description: JSON.stringify(state)
-})
+Recommendations:
+- [Recommendation 1]
+=== END RESULTS ===
 ```
 
-### No TaskCreate Access
-
-Conflict-resolver does NOT create tasks, only updates assigned task.
-
-## Task Coordination Protocol
-
-You are part of a multi-agent system coordinated by the Plan Orchestrator agent.
-
-### When Invoked by Plan Agent
-
-Your prompt will include a TaskID (e.g., "TaskID: task-001").
-
-**Workflow**:
-
-1. **Extract TaskID** from your prompt
-   ```
-   Prompt: "TaskID: task-001\n\n[task description]"
-   → Extract: "task-001"
-   ```
-
-2. **Read Task Details**
-   ```javascript
-   TaskGet("task-001")
-   // Returns full task with description, metadata, etc.
-   ```
-
-3. **Execute Task**
-   - Perform conflict resolution on aggregated chunk findings
-   - Use deduplication and conflict resolution strategies
-   - Merge findings into clean deduplicated dataset
-
-4. **Update Task with Results**
-   ```javascript
-   TaskUpdate({
-     taskId: "task-001",
-     status: "completed",
-     metadata: {
-       summary: "Resolved 7 conflicts, deduplicated 50 findings to 32 unique",
-       findings: [
-         "Finding 1: Merged 3 date variants into canonical form",
-         "Finding 2: Resolved entity name conflict (Acme Corp vs ACME Corporation)"
-       ],
-       files_affected: [],  // Conflict resolution doesn't modify files
-       data: {
-         total_raw_findings: 50,
-         deduplicated_findings: 32,
-         deduplication_rate: 0.36,
-         conflicts_detected: 10,
-         conflicts_resolved: 7,
-         conflicts_flagged: 3,
-         resolution_rate: 0.70,
-         high_confidence_count: 28,
-         medium_confidence_count: 3,
-         low_confidence_count: 1
-       },
-       recommendations: [
-         "3 conflicts flagged for human review",
-         "80% of findings have high confidence (>=0.90)",
-         "Send merged findings to synthesis-agent for final report"
-       ]
-     }
-   })
-   ```
-
-### TaskUpdate Result Format
-
-**CRITICAL**: All agents MUST return results in this exact structure:
-
-```json
-{
-  "taskId": "task-XXX",
-  "status": "completed",
-  "metadata": {
-    "summary": "String - Brief 1-2 sentence summary",
-    "findings": ["Array", "of", "strings"],
-    "files_affected": ["Array", "of", "file", "paths"],
-    "data": {
-      "/* Task-specific structured data */": "..."
-    },
-    "recommendations": ["Array", "of", "strings"]
-  }
-}
-```
-
-**Field Descriptions**:
-
-- **summary**: 1-2 sentence overview of conflict resolution results
-- **findings**: Array of deduplication and conflict resolution actions taken
-- **files_affected**: Empty array for conflict resolution (no file modifications)
-- **data**: Conflict resolution metrics (deduplication rate, resolution rate, confidence distribution)
-- **recommendations**: Array of suggested next steps (human review items, synthesis readiness, etc.)
-
-### When NOT Invoked by Plan Agent
-
-If your prompt does NOT contain a TaskID, operate normally without TaskUpdate.
-This maintains backward compatibility with recursive-agent direct invocation.
+The orchestrator (recursive-agent) handles all task state updates. You do NOT have access to task management tools.
 
 ## Examples by Pattern
 

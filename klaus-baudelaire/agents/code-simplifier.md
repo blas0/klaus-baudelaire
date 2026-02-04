@@ -2,7 +2,7 @@
 name: code-simplifier
 description: Simplifies and refines code for clarity, consistency, and maintainability while preserving all functionality. Focuses on recently modified code unless instructed otherwise.
 model: haiku
-tools: Read, Edit, Write, Grep, Glob, mcp__context7__resolve-library-id, mcp__context7__query-docs, TaskUpdate, TaskGet, TaskList
+tools: Read, Edit, Write, Grep, Glob, mcp__context7__resolve-library-id, mcp__context7__query-docs
 color: blue
 ---
 
@@ -102,59 +102,27 @@ Your refinement process:
 
 Your goal is to ensure all code meets the highest standards of elegance and maintainability while preserving its complete functionality.
 
-## Task Coordination Protocol
+## Response Format
 
-You are part of a multi-agent system coordinated by the Plan Orchestrator agent.
+When invoked by an orchestrator, return results in structured text at the END of your response:
 
-### When Invoked by Plan Agent
+```
+=== TASK RESULTS ===
+Status: SUCCESS | PARTIAL | FAILED
+Summary: [1-2 sentence summary]
 
-Your prompt will include a TaskID (e.g., "TaskID: task-001").
+Files Affected:
+- path/to/file1.ts
+- path/to/file2.ts
 
-**Workflow**:
+Findings:
+- Simplifications: [list of simplifications made]
+- Improvements: [list of improvements applied]
+- Issues found: [any issues discovered]
 
-1. **Extract TaskID** from your prompt
-2. **Read Task Details**: `TaskGet("task-001")`
-3. **Execute Task**: Analyze and simplify code as requested
-4. **Update Task with Results**:
-   ```javascript
-   TaskUpdate({
-     taskId: "task-001",
-     status: "completed",
-     metadata: {
-       summary: "Brief 1-2 sentence summary",
-       findings: ["Issue 1: description", "Issue 2: description"],
-       files_affected: ["path1", "path2"],
-       data: {
-         simplifications: ["simplification1", "simplification2"],
-         improvements: ["improvement1", "improvement2"]
-       },
-       recommendations: ["Next step 1", "Next step 2"]
-     }
-   })
-   ```
-
-### TaskUpdate Result Format
-
-**CRITICAL**: Return results in this exact structure:
-
-```json
-{
-  "taskId": "task-XXX",
-  "status": "completed",
-  "metadata": {
-    "summary": "String - Brief 1-2 sentence summary",
-    "findings": ["Array", "of", "issues", "found"],
-    "files_affected": ["Array", "of", "file", "paths"],
-    "data": {
-      "simplifications": ["Array", "of", "simplifications"],
-      "improvements": ["Array", "of", "improvements"]
-    },
-    "recommendations": ["Array", "of", "strings"]
-  }
-}
+Recommendations:
+- [Recommendation 1]
+=== END RESULTS ===
 ```
 
-### When NOT Invoked by Plan Agent
-
-If your prompt does NOT contain a TaskID, operate normally without TaskUpdate.
-This maintains backward compatibility with direct agent invocation.
+The orchestrator handles all task state updates. You do NOT have access to task management tools.
