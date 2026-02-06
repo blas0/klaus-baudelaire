@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [1.0.7] - 2026-02-06
 
 ### Added - v1.0.7 Teammates Migration
 - **Teammate Routing Skills** - 4 skills for native team formation
@@ -36,41 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Graceful degradation: When teams unavailable, skills advise subagent-based approach
 - Cost-conscious: SOLO (1x) -> SUBAGENT (2x) -> TEAM (4-8x) threshold guidance built into skills
 - Migrated from teammates-and-skill-integration worktree to production ~/.claude installation
-
-### Added
-- **Docker Test Suite: Node.js + Claude Code Installation**
-  - Node.js LTS installation via NodeSource repository
-  - Claude Code CLI installation via native installer (`curl -fsSL https://claude.ai/install.sh | bash`)
-  - Interactive entrypoint script for Claude Code login on container start
-  - Automated test sections for Node.js (Section 11) and Claude Code (Section 12)
-  - New verification script: `tests/verify-docker-integration.sh` for automated testing
-  - New documentation: `tests/DOCKER-TEST-CHECKLIST.md` for comprehensive manual testing
-
-### Changed
-- **docker-test-setup.sh** modifications:
-  - Lines 124-182: Added entrypoint script generation with Claude Code login prompts
-  - Lines 215-220: Added Node.js LTS installation to Dockerfile
-  - Lines 222-229: Replaced Claude Code placeholder with actual CLI installation
-  - Lines 266-271: Added entrypoint script configuration to Dockerfile
-- **container-test-suite.sh** additions:
-  - Section 11 (lines 229-245): Node.js installation verification tests
-  - Section 12 (lines 247-264): Claude Code CLI installation and auth status tests
-- **tests/docker/START-HERE.md** updates:
-  - Added Node.js and Claude Code information to quick start
-  - Updated success criteria to include Node.js and Claude Code tests
-  - Added OAuth troubleshooting for Docker environment
-
-### Fixed
-- Claude Code installation no longer uses placeholder
-- Docker containers now have proper Node.js runtime for compatibility
-- Interactive container setup properly prompts for Claude Code authentication
-
-### Technical Details
-- Node.js version: LTS (v20.x+)
-- Claude Code installer: Native executable with no Node.js dependency
-- PATH configuration: Added `~/.local/bin` for Claude CLI
-- Docker base: Ubuntu 22.04 (unchanged)
-- OAuth authentication: Known limitation in Docker (workaround: credential mounting)
 
 ---
 
