@@ -83,6 +83,7 @@ ENABLE_WEB_RESEARCHER="OFF"       # web-research-specialist agent
 ENABLE_FILE_PATH_EXTRACTOR="ON"   # file-path-extractor agent (default ON)
 ENABLE_TEST_INFRASTRUCTURE="OFF"  # test-infrastructure-agent
 ENABLE_REMINDER_SYSTEM="OFF"      # reminder-nudger-agent
+ENABLE_NATIVE_TEAMS="ON"          # Native teammate routing skills (v1.0.7+)
 
 # Routing Transparency
 ROUTING_EXPLANATION="ON"          # Show routing rationale (default ON)

@@ -276,6 +276,41 @@ For MEDIUM/FULL tier tasks, the Plan agent automatically selects and delegates t
 
 ---
 
+
+---
+
+## Teammate Eligibility (v1.0.7+)
+
+10 of Klaus's 17 agents can be spawned as teammates when `ENABLE_NATIVE_TEAMS="ON"` and `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` is set:
+
+### Teammate-Eligible Agents (10)
+
+- **plan-orchestrator** - Team Lead (is the lead, not spawned)
+- **research-lead** - Research Coordinator
+- **explore-lead** - Codebase Analyst
+- **docs-specialist** - Documentation Researcher
+- **context-validator** - Pre-Implementation Validator
+- **web-research-specialist** - Web Researcher
+- **implementer** - Implementation Worker
+- **test-infrastructure-agent** - Test Setup
+- **code-simplifier** - Code Reviewer
+- **recursive-agent** - Document Analyst
+
+### Subagent-Only Agents (7)
+
+These agents remain subagent-only due to lightweight/specialized nature:
+
+- **file-path-extractor** - Single-purpose utility
+- **git-orchestrator** - Specialized git ops
+- **composter** - Pattern extraction only
+- **reminder-nudger-agent** - Background monitor
+- **chunk-analyzer** - RLM chunk processor
+- **conflict-resolver** - RLM merge step
+- **synthesis-agent** - RLM final report
+
+See [Teammate Skills](16-teammate-skills.md) for team formation patterns and spawn protocols.
+
+
 ## Related Documentation
 
 - [Plan Orchestration](09-plan-orchestration.md) - How Plan agent delegates to agents

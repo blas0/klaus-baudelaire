@@ -137,6 +137,64 @@ Score = 0
 
 ---
 
+---
+
+## Teammate Skills (v1.0.7+)
+
+Klaus extends its architecture with **Native Teammate Skills** for cost-conscious team formation using Claude Code's experimental teammate system.
+
+### The 4 Skills
+
+| Skill | Purpose | Invocation | Cost |
+|-------|---------|------------|------|
+| `/klaus-review-team` | 3-lens code review (security, performance, test) | Manual or auto-trigger | ~4x |
+| `/klaus-research-team` | Multi-source research (docs, web, codebase) | Manual or auto-trigger | ~6x |
+| `/klaus-impl-team` | Parallel implementation with file locks | Manual or auto-trigger | ~5x |
+| `klaus-team` | General-purpose team formation | Via plan-orchestrator | 4-8x |
+
+### Invocation Methods
+
+1. **Manual slash commands**: `/klaus-review-team`, `/klaus-research-team`, `/klaus-impl-team`
+2. **Semi-automatic triggers**: Keywords in prompts ("code review", "research", "implement in parallel")
+3. **Plan-orchestrator delegation**: FULL-tier tasks invoke skills automatically when teams are beneficial
+
+[!!!] **Critical**: Skills are NOT routed via Klaus's `UserPromptSubmit` hook. Semi-automatic triggering relies on Claude Code's internal skill description matching.
+
+### Configuration Requirements
+
+```bash
+# Environment variable (add to ~/.zshrc or ~/.bashrc)
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+
+# Feature flag in klaus-delegation.conf
+ENABLE_NATIVE_TEAMS="ON"
+```
+
+### Cost-Conscious Team Formation
+
+Klaus provides a 3-tier threshold for team formation:
+
+- **SOLO (1x)**: Single-file edits, simple queries
+- **SUBAGENT (1.5-2x)**: Multi-file exploration, documentation gathering
+- **TEAM (4-8x)**: 3+ independent workstreams, inter-communication required
+
+[!!] Always prefer SUBAGENT tier unless inter-communication is critical.
+
+### Agent-to-Teammate Mapping
+
+10 of Klaus's 17 agents can be spawned as teammates:
+
+**Teammate-Eligible**: plan-orchestrator, research-lead, explore-lead, docs-specialist, context-validator, web-research-specialist, implementer, test-infrastructure-agent, code-simplifier, recursive-agent
+
+**Subagent-Only**: file-path-extractor, git-orchestrator, composter, reminder-nudger-agent, chunk-analyzer, conflict-resolver, synthesis-agent
+
+### Graceful Degradation
+
+When `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` is unavailable, skills automatically fall back to SUBAGENT tier using the `Task` tool with `subagent_type` parameter. All agent expertise is retained, but inter-communication is lost.
+
+[Teammate Skills Reference -->](klaus-baudelaire/docs/16-teammate-skills.md)
+
+
 ## Agents (17)
 
 **Delegation Specialists**:
@@ -292,6 +350,7 @@ All detailed documentation:
 07. [Coverage](klaus-baudelaire/docs/07-coverage-tracking.md) | 08. [Sandbox](klaus-baudelaire/docs/08-production-testing.md) | 09. [Plan Agent](klaus-baudelaire/docs/09-plan-orchestration.md)
 10. [Memory](klaus-baudelaire/docs/10-memory-management.md) | 11. [Agents](klaus-baudelaire/docs/11-agent-team.md) | 12. [Tasks](klaus-baudelaire/docs/12-task-management.md)
 13. [Hooks](klaus-baudelaire/docs/13-hooks-system.md) | 14. [Testing](klaus-baudelaire/docs/14-testing-verification.md) | 15. [Troubleshooting](klaus-baudelaire/docs/15-troubleshooting.md)
+16. [Teammate Skills](klaus-baudelaire/docs/16-teammate-skills.md)
 
 ---
 

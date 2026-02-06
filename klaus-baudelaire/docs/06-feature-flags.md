@@ -72,6 +72,7 @@ The Feature Flag Detection System provides runtime feature gates for enabling an
 | `ENABLE_ROUTING_HISTORY` | OFF | Privacy-first routing telemetry |
 | `ENABLE_GITHUB_ACTIONS` | OFF | CI/CD integration templates |
 | `ROUTING_EXPLANATION` | ON | Routing decision transparency |
+| `ENABLE_NATIVE_TEAMS` | ON | Native teammate routing skills (requires CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS env var) |
 
 ---
 
@@ -82,7 +83,7 @@ The Feature Flag Detection System provides runtime feature gates for enabling an
 ### Characteristics
 
 - **Bash 3 compatible** (no associative arrays, works on macOS default shell)
-- **16 registered flags** with human-readable descriptions
+- **17 registered flags** with human-readable descriptions
 - **Automatic backup** before modifications (timestamped `.backup` files)
 - **Flag validation** against registry (prevents typos and invalid operations)
 - **Value validation** (ON/OFF only)
@@ -155,7 +156,7 @@ ENABLE_WEB_RESEARCHER="ON"
 
 ```bash
 /klaus feature list
-# Shows all 16 flags with ON/OFF status
+# Shows all 17 flags with ON/OFF status
 ```
 
 ---
